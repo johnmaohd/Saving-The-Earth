@@ -123,10 +123,10 @@
 
 
     // Tamaños deseados para las imágenes (ajustar si es necesario)
-    const playerImgWidth = 45; // 30 * 1.5
-    const playerImgHeight = 45; // 30 * 1.5
-    const invaderImgWidth = 20;
-    const invaderImgHeight = 20;
+    const playerImgWidth = 50; // 30 * 1.5
+    const playerImgHeight = 50; // 30 * 1.5
+    const invaderImgWidth = 30; // Doubled size
+    const invaderImgHeight = 30; // Doubled size
 
     let imagesLoadedCount = 0;
     const totalImagesToLoad = 3; // Número total de imágenes a cargar (nave, invader, planeta)
@@ -295,7 +295,7 @@
       const x = Math.random() * width;
       const y = -invaderImgHeight; // Empezar justo encima de la pantalla
       const vx = (Math.random() - 0.5) * 2; // Velocidad horizontal aleatoria
-      const vy = 0.33 + Math.random() * 0.33; // Slower: Min speed ~0.33, max speed ~0.66
+      const vy = 0.130 + Math.random() * 0.130; // Halved speed: Min ~0.165, max ~0.33
       martians.push({
         x, y, vx, vy,
 
