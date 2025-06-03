@@ -355,15 +355,18 @@
     function updateMartians() {
       if (gameIsOver) return;
       martians.forEach((martian, index) => {
-        martian.x += martian.vx;
-        martian.y += martian.vy;
+        if (!martian.hasLanded) {
+            // Movement for non-landed martians
+            martian.x += martian.vx;
+            martian.y += martian.vy;
 
-        if (martian.x < 0 || martian.x > width - invaderImgWidth) {
-          martian.vx *= -1;
-        }
+            // Wall bouncing for non-landed martians
+            if (martian.x - invaderImgWidth / 2 < 0 || martian.x + invaderImgWidth / 2 > width) {
+                martian.vx *= -1;
+            }
 
-        // Check if martian reaches planet surface
-        if (planeta.loaded && planeta.reachedTarget && !martian.hasLanded) {
+            // Check if martian reaches planet surface
+            if (planeta.loaded && planeta.reachedTarget) {
             const planetRadius = planeta.width / 2;
             const planetCenterX_onCanvas = planeta.x + planetRadius;
             const planetCenterY_onCanvas = planeta.y + planetRadius; // Assumes planet image is circular and height == width
@@ -379,18 +382,43 @@
                 const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt);
 
                 // Check if the martian's bottom edge touches or is below this surface point
-                if (martian.y + invaderImgHeight / 2 >= yOnPlanetSurface) {
+                const landingDepthOffset = 1; // How many pixels 'into' the planet surface they should go
+                if (martian.y + invaderImgHeight / 2 >= yOnPlanetSurface + landingDepthOffset) {
                     martian.img = invaderRojoImage;
                     martian.hasLanded = true;
                     martian.vy = 0; // Stop vertical movement
                     martian.vx = 0; // Stop horizontal movement
-                    // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface
-                    martian.y = yOnPlanetSurface - invaderImgHeight / 2;
+                    // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface + landingDepthOffset
+                    martian.y = (yOnPlanetSurface + landingDepthOffset) - invaderImgHeight / 2;
+                    // Initialize properties for landed jitter movement
+                    martian.originalLandedX = martian.x;
+                    martian.originalLandedY = martian.y;
+                    martian.jitterTargetX = martian.x; // Initial target is current position
+                    martian.jitterTargetY = martian.y;
+                    martian.jitterChangeTimer = 0; 
                 }
             }
-        } else if (martian.y > height + invaderImgHeight) { // Check if completely off-screen
-          martians.splice(index, 1); // Remove if off-screen
+        } else if (martian.y > height + invaderImgHeight) { // Off-screen check for non-landed martians
+            martians.splice(index, 1); // Remove if off-screen
         }
+    } else { // Martian has landed - apply slow drift jitter movement
+        if (typeof martian.originalLandedX !== 'undefined') { // Ensure original positions are set
+            const JITTER_RANGE = 20; // Total span (e.g., +/- 10px)
+            const JITTER_TARGET_UPDATE_INTERVAL = 120; // Frames (e.g., 2 seconds at 60fps)
+            const JITTER_DRIFT_SPEED = 0.02; // Lower is slower
+
+            martian.jitterChangeTimer++;
+            if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) {
+                martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE;
+                martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE;
+                martian.jitterChangeTimer = 0;
+            }
+
+            // Drift towards the target
+            martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED;
+            martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
+        }
+    }
       });
     }
 
@@ -632,8 +660,8 @@ function checkBulletMartianCollisions() {
 
       updateUI();
 
-      // Periodically try to spawn a new martian
-      if (Math.random() < 0.005 && martians.length < 10) { // Low chance, max 10 martians
+      // Continuously try to spawn a new martian
+      if (Math.random() < 0.01) { // 2% chance per frame to spawn a martian
         createMartian();
       }
     }
