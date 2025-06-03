@@ -43,11 +43,68 @@
     #score {
       position: absolute;
       top: 10px;
-      left: 10px;
+      right: 10px; /* Position score to the right */
       color: white;
       font-size: 18px;
       font-weight: bold;
       z-index: 1001;
+    }
+
+    #earthHealthContainer {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      display: flex; /* Use flexbox for alignment */
+      align-items: center; /* Vertically align items in the middle */
+      z-index: 1000; /* Ensure it's above the canvas */
+      color: white; /* Text color for label */
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    #earthHealthLabel {
+      margin-right: 8px; /* Space between label and bar */
+    }
+
+    #livesDisplayContainer {
+      position: absolute;
+      top: 35px; /* Below Earth health */
+      left: 10px;
+      display: flex;
+      align-items: center;
+      color: white;
+      font-family: 'Arial', sans-serif;
+      font-size: 14px;
+      font-weight: bold;
+      z-index: 1000;
+    }
+
+    #livesLabel {
+      margin-right: 5px;
+    }
+
+    #livesIcons img {
+      width: 20px; /* Adjust size of life icon */
+      height: auto;
+      margin-left: 3px;
+    }
+
+    #earthHealthBarOuter {
+      width: 150px; /* Adjust width for the bar itself */
+      height: 18px; /* Adjust height for the bar itself */
+      border: 2px solid #FFF;
+      background-color: #555;
+      border-radius: 5px;
+      padding: 1px; /* Small padding so inner bar doesn't touch border */
+    }
+
+    #earthHealthBar {
+      height: 100%;
+      width: 100%; /* Starts full */
+      background-color: #4CAF50; /* Green for health */
+      border-radius: 3px; /* Slightly rounded inner bar */
+      transition: width 0.1s linear; /* Smooth transition for health changes */
     }
 
     #gameOver {
@@ -74,7 +131,17 @@
 
 <body>
 
+  <div id="earthHealthContainer">
+    <span id="earthHealthLabel">Earth Shield:</span>
+    <div id="earthHealthBarOuter">
+      <div id="earthHealthBar"></div>
+    </div>
+  </div>
   <div id="score">Puntuación: 0</div>
+  <div id="livesDisplayContainer">
+    <span id="livesLabel">Lives: </span>
+    <div id="livesIcons"></div>
+  </div>
   <div id="gameOver">
     <div id="gameOverMessage">¡Juego Terminado!</div>
     <button id="restartBtn">Reiniciar Juego</button>
@@ -88,6 +155,9 @@
     const canvas = document.getElementById("flightCanvas");
     const ctx = canvas.getContext("2d");
     const gameOverDiv = document.getElementById('gameOver'); // Correctly get the div
+    const scoreDisplay = document.getElementById('score');
+    const earthHealthBarDiv = document.getElementById('earthHealthBar');
+    const livesDisplayDiv = document.getElementById('livesIcons'); // Get the div for life icons
 
     // --- Código para cargar Sonidos ---
 
@@ -462,10 +532,18 @@
 
     // Puntuación
     let score = 0;
-    const scoreDisplay = document.getElementById("score");
-    // const speedValue = document.getElementById("speedValue"); // Control removed
 
-    // const shootBtn = document.getElementById("shootBtn"); // Control removed
+    // Earth Health System
+    const earthMaxHealth = 100;
+    let earthCurrentHealth = earthMaxHealth;
+    const damagePerLandedMartianPerFrame = 0.03; // Damage per landed martian per frame
+
+    // Player Lives System
+    let playerLives = 3;
+    const playerInvulnerabilityDuration = 180; // 3 seconds at 60fps
+    let playerIsInvulnerable = false;
+    let playerInvulnerableTimer = 0;
+
     function clearCanvas() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
       ctx.fillRect(0, 0, width, height);
@@ -653,6 +731,23 @@ function checkBulletMartianCollisions() {
       updateExplosions(); // Update explosion particles
       drawExplosions();   // Draw explosion particles
 
+      // Earth health drain by landed martians & game over check
+      if (!gameIsOver && !playerDestroyed) {
+        let landedMartiansOnPlanet = 0;
+        for (const m of martians) {
+          if (m.hasLanded) {
+            landedMartiansOnPlanet++;
+            earthCurrentHealth -= damagePerLandedMartianPerFrame;
+          }
+        }
+        earthCurrentHealth = Math.max(0, earthCurrentHealth); // Prevent negative health
+
+        if (earthCurrentHealth <= 0) {
+          playerDestroyed = true; // Trigger game over sequence
+          scheduleGameOverScreen();
+        }
+      }
+
       if (!playerDestroyed) { // Only check collisions if player is active
         checkCollisionsWithMartians(); // Player vs Martian
         checkBulletMartianCollisions(); // Bullet vs Martian
@@ -668,6 +763,10 @@ function checkBulletMartianCollisions() {
 
     function updateUI() {
       scoreDisplay.textContent = `Puntuación: ${score}`;
+      if (earthHealthBarDiv) {
+        const healthPercentage = (earthCurrentHealth / earthMaxHealth) * 100;
+        earthHealthBarDiv.style.width = `${healthPercentage}%`;
+      }
       // updateEarthHealthDisplay(); // Function removed
       // speedValue.textContent = `Velocidad: ${Math.abs(speed).toFixed(1)}`; // Control removed
     }
