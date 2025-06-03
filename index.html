@@ -560,6 +560,7 @@
     const playerInvulnerabilityDuration = 180; // 3 seconds at 60fps
     let playerIsInvulnerable = false;
     let playerInvulnerableTimer = 0;
+    let planetHasExploded = false;
 
     function clearCanvas() {
       ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
@@ -688,16 +689,36 @@
     }
 
     function drawPlaneta() {
-      if (planeta.loaded && planeta.img && planeta.img.complete && planeta.img.naturalWidth !== 0) {
-        ctx.drawImage(planeta.img, planeta.x, planeta.y, planeta.width, planeta.height);
+      if (planetHasExploded || !planeta.loaded || !planeta.img || !planeta.img.complete || planeta.img.naturalWidth === 0) {
+        return;
+      }
+
+      // Draw the base planet image
+      ctx.drawImage(planeta.img, planeta.x, planeta.y, planeta.width, planeta.height);
+
+      // Calculate damage intensity (0 = full health, 1 = zero health)
+      const damageIntensity = Math.max(0, 1 - (earthCurrentHealth / earthMaxHealth));
+
+      if (damageIntensity > 0) {
+        ctx.save();
+        // Apply red overlay, increasing opacity with damage
+        // Max alpha for red overlay can be set (e.g., 0.7 for 70% red at max damage)
+        ctx.globalAlpha = damageIntensity * 0.7;
+        ctx.fillStyle = 'red';
+        // Draw a circle over the planet area. Assuming planeta.x, planeta.y are top-left.
+        // Planet's center is (planeta.x + planeta.width / 2, planeta.y + planeta.height / 2)
+        // Radius is planeta.width / 2 (assuming it's roughly circular)
+        ctx.beginPath();
+        ctx.arc(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, planeta.width / 2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore(); // Restores globalAlpha and other canvas states
       }
     }
 
 
-function checkBulletMartianCollisions() {
-  if (gameIsOver) return;
-
-  for (let i = bullets.length - 1; i >= 0; i--) {
+    function checkBulletMartianCollisions() {
+      if (gameIsOver) return;
+      for (let i = bullets.length - 1; i >= 0; i--) {
     const bullet = bullets[i];
     // Ensure bullet exists if it was spliced in the same frame by another martian collision
     if (!bullet) continue; 
@@ -774,10 +795,16 @@ function checkBulletMartianCollisions() {
         earthCurrentHealth = Math.max(0, earthCurrentHealth); // Prevent negative health
 
         if (earthCurrentHealth <= 0) {
-          playerDestroyed = true; // Trigger game over sequence
+          if (!planetHasExploded) { // Explode only once
+            planetHasExploded = true;
+            // Create a large explosion for the planet
+            createExplosion(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, 'white', 300);
+            // Optionally, add a screen shake or a more powerful sound effect here
+          }
+          playerDestroyed = true; // Player is also considered destroyed/game over
           scheduleGameOverScreen();
-        }
-      }
+        } // Closes if (earthCurrentHealth <= 0)
+      } // Closes if (!gameIsOver && !playerDestroyed)
 
       if (!playerDestroyed) { // Only check collisions if player is active
         checkCollisionsWithMartians(); // Player vs Martian
