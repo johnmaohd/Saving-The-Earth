@@ -158,6 +158,8 @@
     const canvas = document.getElementById("flightCanvas");
     const ctx = canvas.getContext("2d");
     const gameOverDiv = document.getElementById('gameOver'); // Correctly get the div
+    const gameOverMessage = document.getElementById('gameOverMessage');
+    const restartBtn = document.getElementById('restartBtn');
     const scoreDisplay = document.getElementById('score');
     const earthHealthBarDiv = document.getElementById('earthHealthBar');
     const livesDisplayDiv = document.getElementById('livesIcons'); // Get the div for life icons
@@ -851,22 +853,90 @@
     }
 
     function scheduleGameOverScreen() {
-  // Prevent multiple calls or if player not actually destroyed yet for this flow
-  // (playerDestroyed should be true when this is called from player-martian collision)
-  if (gameIsOver || !playerDestroyed) return; 
+  if (gameIsOver || !playerDestroyed) return;
 
-  // Delay the actual game over state and message
+  // Primero, mostrar solo el mensaje de Game Over
+  if (gameOverDiv && gameOverMessage && restartBtn) {
+    gameOverMessage.style.display = "block";
+    restartBtn.style.display = "none";
+    gameOverDiv.style.display = "flex";
+  }
+
+  // Después de un tiempo, ocultar mensaje y mostrar botón
   setTimeout(() => {
-    gameIsOver = true; // Now stop the animation loop
-    if (gameOverDiv) { // Check if gameOverDiv exists
-        gameOverDiv.style.display = "flex";
-    }
-    // The restartBtn in the HTML can be made to reload the page for a simple reset:
-    // e.g., by adding an onclick="window.location.reload()" to the button in HTML,
-    // or by adding an event listener for it elsewhere if preferred.
-  }, 1500); // 1.5 second delay to see explosion
+    if (gameOverMessage) gameOverMessage.style.display = "none";
+    if (restartBtn) restartBtn.style.display = "block";
+    gameIsOver = true; // Detener el bucle de animación principal aquí o dentro de animate()
+  }, 3000); // 3 segundos para leer "Game Over", luego aparece el botón
 }
 
+function restartGame() {
+  // Ocultar pantalla de Game Over
+  if (gameOverDiv) gameOverDiv.style.display = "none";
+
+  // Resetear variables del juego
+  score = 0;
+  playerLives = 3; // Restablecer a la cantidad inicial de vidas.
+  earthHealth = MAX_EARTH_HEALTH; // Usar la constante definida
+  
+  // Resetear estado del jugador
+  position.x = width / 2 - playerImgWidth / 2; // Posición inicial X (centrado)
+  position.y = height - playerImgHeight - 30;  // Posición inicial Y (cerca del fondo)
+  angle = 0; // Ángulo inicial (ej. apuntando hacia arriba o adelante)
+  speed = actualMinSpeed; // Restablecer a la velocidad mínima/inicial
+  rotationSpeed = 0; // Restablecer velocidad de rotación
+  playerDestroyed = false;
+  
+  // Resetear estado de las teclas
+  keys.up = false;
+  keys.down = false;
+  keys.left = false;
+  keys.right = false;
+
+  // Resetear flags de sonido iniciales
+  firstShotFired = false;
+  atmosphericSoundHasStarted = false;
+  // Si el sonido atmosférico estaba en bucle, podrías necesitar pararlo aquí
+  // audioAtmosfera.pause();
+  // audioAtmosfera.currentTime = 0;
+
+  // Limpiar arrays de juego
+  bullets = [];
+  martians = [];
+  explosions = [];
+  
+  // Recrear elementos iniciales
+  createMartianInitialWave();
+  // Si tienes estrellas u otros elementos que se generan una vez, considera si deben recrearse.
+  // createStars(); // Por ejemplo, si las estrellas deben cambiar o resetearse.
+  
+  gameIsOver = false;
+  
+  // Actualizar UI inmediatamente
+  updateUI(); 
+
+  // Reiniciar animación
+  if (typeof animate === 'function') {
+    animate();
+  } else {
+    console.error('La función animate no está definida globalmente o no es accesible.');
+  }
+}
+
+// Añadir event listener al botón de reinicio
+if (restartBtn) {
+  restartBtn.addEventListener('click', restartGame);
+}
+
+    // Función para crear la oleada inicial de marcianos (ejemplo)
+    function createMartianInitialWave() {
+      // Lógica para crear los marcianos iniciales, por ejemplo:
+      for (let i = 0; i < 10; i++) { // Crear 10 marcianos como ejemplo
+        setTimeout(createMartian, i * 500); // Espaciados en el tiempo
+      }
+    }
+
+    createMartianInitialWave(); // Llamar para la primera oleada al cargar el juego
     animate();
   </script>
 </body>
