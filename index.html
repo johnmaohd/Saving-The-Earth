@@ -185,29 +185,37 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      display: flex; /* Cambiado a flex para mostrar por defecto */
+      display: flex;
+      /* Cambiado a flex para mostrar por defecto */
       flex-direction: column;
       align-items: center;
       text-align: center;
-      z-index: 1003; /* Encima de todo lo demás inicialmente */
+      z-index: 1003;
+      /* Encima de todo lo demás inicialmente */
     }
 
     #startScreen img {
-      max-width: 80%; /* Ajusta según sea necesario */
+      max-width: 80%;
+      /* Ajusta según sea necesario */
       height: auto;
-      margin-bottom: 30px; /* Espacio entre imagen y botón */
-      border: 3px solid #7bc307; /* Borde verde como el botón */
+      margin-bottom: 30px;
+      /* Espacio entre imagen y botón */
+      border: 3px solid #7bc307;
+      /* Borde verde como el botón */
       border-radius: 10px;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
 
     #startGameBtn {
-      background-color: #7bc307; /* Verde como el de reiniciar */
+      background-color: #7bc307;
+      /* Verde como el de reiniciar */
       color: white;
       border: none;
       border-radius: 25px;
-      padding: 15px 35px; /* Un poco más grande */
-      font-size: 22px; /* Más grande */
+      padding: 15px 35px;
+      /* Un poco más grande */
+      font-size: 22px;
+      /* Más grande */
       font-weight: bold;
       font-family: 'Arial', sans-serif;
       cursor: pointer;
@@ -218,13 +226,15 @@
     }
 
     #startGameBtn:hover {
-      background-color: #6aa805; /* Verde más oscuro */
+      background-color: #6aa805;
+      /* Verde más oscuro */
       transform: translateY(-3px) scale(1.05);
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
     }
 
     #startGameBtn:active {
-      background-color: #589004; /* Verde aún más oscuro */
+      background-color: #589004;
+      /* Verde aún más oscuro */
       transform: translateY(0px) scale(1);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
@@ -268,20 +278,28 @@
   <script>
     const canvas = document.getElementById("flightCanvas");
     const ctx = canvas.getContext("2d");
-    const gameOverDiv = document.getElementById('gameOver'); // Correctly get the div
+    const gameOverDiv = document.getElementById('gameOver');
     const gameOverMessage = document.getElementById('gameOverMessage');
     const restartBtn = document.getElementById('restartBtn');
-    const scoreDisplay = document.getElementById('score');
+
+    // Elementos de la pantalla de inicio
+    const startScreenDiv = document.getElementById('startScreen');
+    const startGameBtn = document.getElementById('startGameBtn');
+    console.log('startGameBtn element:', startGameBtn); // DEBUG
+    // Estas ya están declaradas globalmente más abajo, nos aseguraremos de que esas globales se usen.
+    // const scoreDisplay = document.getElementById('score'); 
     const earthHealthBarDiv = document.getElementById('earthHealthBar');
     const livesDisplayDiv = document.getElementById('livesIcons'); // Get the div for life icons
+    // No se necesita obtener scoreDisplay aquí, ya que se obtiene globalmente como scoreDisplayGlobal
 
     // --- Código para cargar Sonidos ---
-
     const audioLaser = new Audio('laser.wav'); // Nuevo sonido para el disparo
     const audioAtmosfera = new Audio('sonido_atmosferico.mp3'); // Ensure 'sonido_atmosferico.mp3' exists
     const audioPlayerExplosion = new Audio('explosion-nave.mp3'); // Sound for player explosion
     const audioInvaderDown = new Audio('invader_down.wav');   // Sound for martian destroyed by bullet
     const audioEarthBang = new Audio('earth_bang.wav');     // Sound for Earth explosion
+    const audioPremio = new Audio('premio.mp3'); // Sound for starting the game
+    const audioVoz = new Audio('voz.wav'); // Sound for initial voice
 
     function playSound(sound) {
       if (sound && typeof sound.play === 'function') {
@@ -292,7 +310,15 @@
 
     // --- Fin del código para cargar Sonidos ---
 
+    // Referencias GLOBALES a elementos de la UI del juego que se mostrarán/ocultarán
+    // Estas se usan en initializeOrResetGame y updateUI
+    const scoreDisplayGlobal = document.getElementById('score');
+    const earthHealthContainerGlobal = document.getElementById('earthHealthContainer');
+    const livesDisplayContainerGlobal = document.getElementById('livesDisplayContainer');
+    // Nota: 'scoreDisplay' (sin Global) se obtiene localmente en updateUI, lo cual está bien.
+
     let gameIsOver = false;
+    let gameHasStarted = false;
 
     // --- Código para cargar imágenes ---
     const playerImage = new Image();
@@ -495,6 +521,7 @@
     }
 
     function drawExplosions() {
+      ctx.fillStyle = "white";
       explosions.forEach(p => {
         ctx.save();
         ctx.globalAlpha = Math.max(0, p.alpha); // Ensure alpha is not negative
@@ -866,6 +893,10 @@
     }
 
     function animate() {
+      if (!gameHasStarted) { // Si el juego no ha comenzado, no hacer nada en este bucle
+        // La animación de fondo (estrellas) se maneja en initialBackgroundAnimation
+        return;
+      }
       if (gameIsOver) {
         // Game over message is handled by scheduleGameOverScreen
         // No need to call requestAnimationFrame again if game is over
@@ -940,7 +971,11 @@
     }
 
     function updateUI() {
-      scoreDisplay.textContent = `Puntuación: ${score}`;
+      // Usa la referencia global para el score si es necesario, o la local si está definida aquí.
+      // Para consistencia y evitar errores de scope, usamos la global.
+      if (scoreDisplayGlobal) scoreDisplayGlobal.textContent = `Puntuación: ${score}`;
+      // const scoreDisplay = document.getElementById('score'); // Esta es local, si la prefieres, asegúrate que esté definida. Si no, usa la global.
+      // scoreDisplay.textContent = `Puntuación: ${score}`;
       if (earthHealthBarDiv) {
         const healthPercentage = (earthCurrentHealth / earthMaxHealth) * 100;
         earthHealthBarDiv.style.width = `${healthPercentage}%`;
@@ -981,8 +1016,8 @@
       }, 3000); // 3 segundos para leer "Game Over", luego aparece el botón
     }
 
-    function restartGame() {
-      // Ocultar pantalla de Game Over
+    function initializeOrResetGame() {
+      // Ocultar pantalla de Game Over si estuviera visible
       if (gameOverDiv) gameOverDiv.style.display = "none";
 
       // Resetear variables del juego
@@ -997,6 +1032,8 @@
       speed = actualMinSpeed; // Restablecer a la velocidad mínima/inicial
       rotationSpeed = 0; // Restablecer velocidad de rotación
       playerDestroyed = false;
+      playerIsInvulnerable = false; // Asegurarse de no ser invulnerable al inicio
+      playerInvulnerableTimer = 0;
 
       // Resetear estado de las teclas
       keys.up = false;
@@ -1007,9 +1044,11 @@
       // Resetear flags de sonido iniciales
       firstShotFired = false;
       atmosphericSoundHasStarted = false;
-      // Si el sonido atmosférico estaba en bucle, podrías necesitar pararlo aquí
-      // audioAtmosfera.pause();
-      // audioAtmosfera.currentTime = 0;
+      // Parar y resetear sonidos si es necesario (ej. atmósfera)
+      if (audioAtmosfera && typeof audioAtmosfera.pause === 'function') {
+        audioAtmosfera.pause();
+        audioAtmosfera.currentTime = 0;
+      }
 
       // Limpiar arrays de juego
       bullets = [];
@@ -1018,21 +1057,81 @@
 
       // Recrear elementos iniciales
       createMartianInitialWave();
-      // Si tienes estrellas u otros elementos que se generan una vez, considera si deben recrearse.
-      // createStars(); // Por ejemplo, si las estrellas deben cambiar o resetearse.
+      // createStars(); // Las estrellas ya se crean y animan desde el inicio
 
       gameIsOver = false;
+      gameHasStarted = true; // Marcar que el juego ha comenzado
+
+      // Mostrar UI del juego
+      if (scoreDisplayGlobal) scoreDisplayGlobal.style.display = 'block';
+      if (earthHealthContainerGlobal) earthHealthContainerGlobal.style.display = 'flex'; // o 'block' según diseño
+      if (livesDisplayContainerGlobal) livesDisplayContainerGlobal.style.display = 'flex'; // o 'block'
 
       // Actualizar UI inmediatamente
       updateUI();
 
-      // Reiniciar animación
+      // Reiniciar animación principal del juego
       if (typeof animate === 'function') {
         animate();
       } else {
         console.error('La función animate no está definida globalmente o no es accesible.');
       }
     }
+
+    function restartGame() { // Esta función ahora solo llama a la nueva función de inicialización
+      initializeOrResetGame();
+    }
+    // Ocultar pantalla de Game Over
+    if (gameOverDiv) gameOverDiv.style.display = "none";
+
+    // Resetear variables del juego
+    score = 0;
+    playerLives = 3; // Restablecer a la cantidad inicial de vidas.
+    earthHealth = MAX_EARTH_HEALTH; // Usar la constante definida
+
+    // Resetear estado del jugador
+    position.x = width / 2 - playerImgWidth / 2; // Posición inicial X (centrado)
+    position.y = height - playerImgHeight - 30;  // Posición inicial Y (cerca del fondo)
+    angle = 0; // Ángulo inicial (ej. apuntando hacia arriba o adelante)
+    speed = actualMinSpeed; // Restablecer a la velocidad mínima/inicial
+    rotationSpeed = 0; // Restablecer velocidad de rotación
+    playerDestroyed = false;
+
+    // Resetear estado de las teclas
+    keys.up = false;
+    keys.down = false;
+    keys.left = false;
+    keys.right = false;
+
+    // Resetear flags de sonido iniciales
+    firstShotFired = false;
+    atmosphericSoundHasStarted = false;
+    // Si el sonido atmosférico estaba en bucle, podrías necesitar pararlo aquí
+    // audioAtmosfera.pause();
+    // audioAtmosfera.currentTime = 0;
+
+    // Limpiar arrays de juego
+    bullets = [];
+    martians = [];
+    explosions = [];
+
+    // Recrear elementos iniciales
+    createMartianInitialWave();
+    // Si tienes estrellas u otros elementos que se generan una vez, considera si deben recrearse.
+    // createStars(); // Por ejemplo, si las estrellas deben cambiar o resetearse.
+
+    gameIsOver = false;
+
+    // Actualizar UI inmediatamente
+    updateUI();
+
+    // Reiniciar animación
+    if (typeof animate === 'function') {
+      animate();
+    } else {
+      console.error('La función animate no está definida globalmente o no es accesible.');
+    }
+
 
     // Añadir event listener al botón de reinicio
     if (restartBtn) {
@@ -1047,8 +1146,53 @@
       }
     }
 
-    createMartianInitialWave(); // Llamar para la primera oleada al cargar el juego
-    animate();
+    // Añadir event listener al botón de reinicio
+    if (restartBtn) {
+      restartBtn.addEventListener('click', restartGame);
+    }
+
+    // El juego ya no comienza automáticamente.
+    // Se iniciará con el botón de la pantalla de inicio.
+    // PERO, necesitamos dibujar las estrellas desde el principio.
+    createStars(); // Crear estrellas para el fondo inicial
+
+    function initialBackgroundAnimation() {
+      if (!gameHasStarted) {
+        clearCanvas();
+        updateStars();
+        drawStars();
+        requestAnimationFrame(initialBackgroundAnimation);
+      } else {
+        // Una vez que el juego ha comenzado, la animación principal (animate()) toma el control.
+        // Esta función ya no necesita seguir ejecutándose.
+        return;
+      }
+    }
+
+    // Event listener para el botón de INICIAR JUEGO
+    // Asegurarse que startGameBtn no es null antes de añadir el listener
+    // Event listener para el botón de INICIAR JUEGO
+    if (startGameBtn) {
+      console.log('Adding event listener to startGameBtn'); // DEBUG
+      startGameBtn.addEventListener('click', () => {
+        console.log('startGameBtn clicked!'); // DEBUG
+        playSound(audioPremio);
+        playSound(audioVoz);
+        if (startScreenDiv) {
+          console.log('Hiding startScreenDiv'); // DEBUG
+          startScreenDiv.style.display = 'none';
+        }
+        console.log('Calling initializeOrResetGame from startGameBtn'); // DEBUG
+        initializeOrResetGame();
+      });
+    }
+    else {
+      console.error('startGameBtn not found, cannot add event listener.'); // DEBUG
+    }
+
+    // Iniciar la animación de fondo DESPUÉS de definir todo, incluyendo los listeners
+    initialBackgroundAnimation();
+
   </script>
 </body>
 
