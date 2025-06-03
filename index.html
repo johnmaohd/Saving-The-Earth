@@ -494,7 +494,7 @@
 
 
     function checkCollisionsWithMartians() {
-      if (playerDestroyed) return;
+      if (playerDestroyed || playerIsInvulnerable) return; // Don't check if destroyed or invulnerable
 
       for (let i = martians.length - 1; i >= 0; i--) {
         const m = martians[i];
@@ -509,13 +509,27 @@
           playSound(audioPlayerExplosion);
           createExplosion(position.x, position.y, "red", 50); // Player explosion
           createExplosion(m.x, m.y, "orange", 30);      // Martian explosion
-          martians.splice(i, 1);                         // Remove martian
-          playerDestroyed = true;
-          scheduleGameOverScreen();                      // Trigger game over
-          break; // Player is destroyed, no need to check other martians
-        }
+          martians.splice(i, 1); // Remove martian that hit the player
+
+      playerLives--;
+      updateUI(); // Update lives display immediately
+
+      if (playerLives > 0) {
+        // Respawn player
+        position.x = width / 2;
+        position.y = height - playerImgHeight / 2 - 10; // Reset position
+        playerIsInvulnerable = true;
+        playerInvulnerableTimer = playerInvulnerabilityDuration;
+        // Player is not destroyed yet, game continues
+      } else {
+        // No lives left
+        playerDestroyed = true;
+        scheduleGameOverScreen(); // Trigger game over
       }
+      break; // Collision handled, no need to check other martians for this frame
     }
+  }
+}
 
     function drawMartians() {
       martians.forEach(martian => {
@@ -580,6 +594,12 @@
 
     function drawPlayer() {
       if (playerDestroyed || !playerImage.complete || playerImage.naturalWidth === 0) return;
+
+      // Blinking effect during invulnerability
+      if (playerIsInvulnerable && (playerInvulnerableTimer % 20 < 10)) { // Blink off for 10 frames, on for 10 frames
+        return; // Skip drawing to make it blink
+      }
+
       ctx.save();
       ctx.translate(position.x, position.y);
       ctx.rotate(-angle); // Player image 'nave.png' is assumed to point to the right by default
@@ -718,7 +738,15 @@ function checkBulletMartianCollisions() {
       updatePlaneta();
       drawPlaneta();
 
-      if (!playerDestroyed) {
+  // Handle player invulnerability timer
+  if (playerIsInvulnerable) {
+    playerInvulnerableTimer--;
+    if (playerInvulnerableTimer <= 0) {
+      playerIsInvulnerable = false;
+    }
+  }
+
+  if (!playerDestroyed) {
         updatePlayer();
         drawPlayer();
       }
@@ -766,6 +794,17 @@ function checkBulletMartianCollisions() {
       if (earthHealthBarDiv) {
         const healthPercentage = (earthCurrentHealth / earthMaxHealth) * 100;
         earthHealthBarDiv.style.width = `${healthPercentage}%`;
+      }
+
+      // Update lives display
+      if (livesDisplayDiv && playerImage.loaded) {
+        livesDisplayDiv.innerHTML = ''; // Clear existing life icons
+        for (let i = 0; i < playerLives; i++) {
+          const lifeIcon = document.createElement('img');
+          lifeIcon.src = playerImage.src;
+          // CSS will style the size via #livesIcons img
+          livesDisplayDiv.appendChild(lifeIcon);
+        }
       }
       // updateEarthHealthDisplay(); // Function removed
       // speedValue.textContent = `Velocidad: ${Math.abs(speed).toFixed(1)}`; // Control removed
