@@ -362,14 +362,32 @@
           martian.vx *= -1;
         }
 
-        // Check if martian reaches planet
-        if (planeta.loaded && planeta.reachedTarget && !martian.hasLanded && martian.y + invaderImgHeight / 2 >= planeta.targetY) {
-          martian.img = invaderRojoImage;
-          martian.hasLanded = true;
-          martian.vy = 0; // Stop vertical movement
-          martian.vx = 0; // Stop horizontal movement
-          martian.y = planeta.targetY - invaderImgHeight / 2; // Sit on top of the planet (adjust if y is not center)
-          // Potentially trigger game over or other logic here later
+        // Check if martian reaches planet surface
+        if (planeta.loaded && planeta.reachedTarget && !martian.hasLanded) {
+            const planetRadius = planeta.width / 2;
+            const planetCenterX_onCanvas = planeta.x + planetRadius;
+            const planetCenterY_onCanvas = planeta.y + planetRadius; // Assumes planet image is circular and height == width
+
+            const dxMartianToPlanetCenter = martian.x - planetCenterX_onCanvas;
+
+            // Check if martian is horizontally within the planet's span for collision
+            if (Math.abs(dxMartianToPlanetCenter) < planetRadius) { 
+                let termInsideSqrt = planetRadius * planetRadius - dxMartianToPlanetCenter * dxMartianToPlanetCenter;
+                // Ensure term is not negative due to potential floating point inaccuracies if dx is very close to radius
+                termInsideSqrt = Math.max(0, termInsideSqrt); 
+                // yOnPlanetSurface is the y-coordinate on the upper circumference of the planet at martian's x
+                const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt);
+
+                // Check if the martian's bottom edge touches or is below this surface point
+                if (martian.y + invaderImgHeight / 2 >= yOnPlanetSurface) {
+                    martian.img = invaderRojoImage;
+                    martian.hasLanded = true;
+                    martian.vy = 0; // Stop vertical movement
+                    martian.vx = 0; // Stop horizontal movement
+                    // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface
+                    martian.y = yOnPlanetSurface - invaderImgHeight / 2;
+                }
+            }
         } else if (martian.y > height + invaderImgHeight) { // Check if completely off-screen
           martians.splice(index, 1); // Remove if off-screen
         }
