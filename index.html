@@ -85,9 +85,12 @@
     }
 
     #livesIcons img {
-      width: 20px; /* Adjust size of life icon */
+      width: 30px; /* Increased size (20px * 1.5) */
       height: auto;
-      margin-left: 3px;
+      margin-left: 5px; /* Slightly increased margin for larger, rotated icons */
+      transform: rotate(-45deg); /* Rotate 45 degrees counter-clockwise */
+      /* Optional: Adjust vertical alignment if needed after rotation */
+      /* vertical-align: middle; */ 
     }
 
     #earthHealthBarOuter {
@@ -797,9 +800,12 @@ function checkBulletMartianCollisions() {
       }
 
       // Update lives display
-      if (livesDisplayDiv && playerImage.loaded) {
+      if (livesDisplayDiv && playerImage.complete && playerImage.naturalWidth !== 0) {
         livesDisplayDiv.innerHTML = ''; // Clear existing life icons
-        for (let i = 0; i < playerLives; i++) {
+        // Display icons for spare lives (playerLives - 1)
+        // Ensure playerLives is at least 1 before trying to show N-1 icons
+        const spareLivesToShow = Math.max(0, playerLives - 1);
+        for (let i = 0; i < spareLivesToShow; i++) {
           const lifeIcon = document.createElement('img');
           lifeIcon.src = playerImage.src;
           // CSS will style the size via #livesIcons img
