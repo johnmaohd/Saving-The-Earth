@@ -93,6 +93,8 @@
 
     const audioLaser = new Audio('laser.wav'); // Nuevo sonido para el disparo
     const audioAtmosfera = new Audio('sonido_atmosferico.mp3'); // Ensure 'sonido_atmosferico.mp3' exists
+    const audioPlayerExplosion = new Audio('explosion-nave.mp3'); // Sound for player explosion
+    const audioInvaderDown = new Audio('invader_down.wav'); // Sound for martian destroyed by bullet
 
     function playSound(sound) {
       if (sound && typeof sound.play === 'function') {
@@ -112,7 +114,11 @@
 
     const invaderImage = new Image();
     invaderImage.onload = imageLoaded;
-    invaderImage.src = "invader.png";
+    invaderImage.src = 'invader.png';
+
+    const invaderRojoImage = new Image();
+    invaderRojoImage.onload = imageLoaded;
+    invaderRojoImage.src = 'invader_rojo.png';
 
     let planeta = { img: null, x: 0, y: 0, width: 0, height: 0, targetY: 0, speed: 0, loaded: false, reachedTarget: false }; // Planeta state
 
@@ -128,8 +134,12 @@
     const invaderImgWidth = 30; // Doubled size
     const invaderImgHeight = 30; // Doubled size
 
+    // Martian base speeds
+    let martianBaseSpeedX = 1; // Base for horizontal speed calculation
+    let martianBaseSpeedY = 0.15; // Base vertical speed
+
     let imagesLoadedCount = 0;
-    const totalImagesToLoad = 3; // Número total de imágenes a cargar (nave, invader, planeta)
+    const totalImagesToLoad = 4; // Número total de imágenes a cargar (nave, invader, invaderRojo, planeta)
 
     // Función que se llama cuando una imagen ha terminado de cargar
     function imageLoaded() {
@@ -262,6 +272,49 @@
       });
     }
 
+    // --- Explosion Particle System ---
+    function createExplosion(x, y, color, count) {
+      for (let i = 0; i < count; i++) {
+        explosions.push({
+          x: x,
+          y: y,
+          vx: (Math.random() - 0.5) * 5, // Random velocity x, range -2.5 to 2.5
+          vy: (Math.random() - 0.5) * 5, // Random velocity y, range -2.5 to 2.5
+          size: Math.random() * 3 + 2,   // Random size between 2 and 5
+          life: Math.random() * 40 + 20, // Random life between 20 and 60 frames
+          color: color,
+          alpha: 1 // Initial alpha for fading
+        });
+      }
+    }
+
+    function updateExplosions() {
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const p = explosions[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        p.alpha = p.life / 40; // Simple fade out, adjust 40 based on max life, ensure it's based on initial life range
+
+        if (p.life <= 0) {
+          explosions.splice(i, 1);
+        }
+      }
+    }
+
+    function drawExplosions() {
+      explosions.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.alpha); // Ensure alpha is not negative
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+    }
+    // --- End Explosion Particle System ---
+
     // Explosiones
     let explosions = [];
 
@@ -292,14 +345,11 @@
     }
 
     function createMartian() {
-      const x = Math.random() * width;
-      const y = -invaderImgHeight; // Empezar justo encima de la pantalla
-      const vx = (Math.random() - 0.5) * 2; // Velocidad horizontal aleatoria
-      const vy = 0.130 + Math.random() * 0.130; // Halved speed: Min ~0.165, max ~0.33
-      martians.push({
-        x, y, vx, vy,
-
-      });
+      const x = Math.random() * (width - invaderImgWidth) + invaderImgWidth / 2;
+      const y = invaderImgHeight / 2; // Start at the top, adjusted for center
+      const vx = (Math.random() - 0.5) * 2 * martianBaseSpeedX; // Random horizontal speed
+      const vy = martianBaseSpeedY; // Consistent vertical speed
+      martians.push({ x, y, vx, vy, img: invaderImage, hasLanded: false });
     }
 
     function updateMartians() {
@@ -312,38 +362,55 @@
           martian.vx *= -1;
         }
 
-        if (planeta.loaded && planeta.reachedTarget && martian.y + invaderImgHeight >= planeta.targetY) {
-          scheduleGameOverScreen(); // Martian reached planet
-        } else if (martian.y > height) {
+        // Check if martian reaches planet
+        if (planeta.loaded && planeta.reachedTarget && !martian.hasLanded && martian.y + invaderImgHeight / 2 >= planeta.targetY) {
+          martian.img = invaderRojoImage;
+          martian.hasLanded = true;
+          martian.vy = 0; // Stop vertical movement
+          martian.vx = 0; // Stop horizontal movement
+          martian.y = planeta.targetY - invaderImgHeight / 2; // Sit on top of the planet (adjust if y is not center)
+          // Potentially trigger game over or other logic here later
+        } else if (martian.y > height + invaderImgHeight) { // Check if completely off-screen
           martians.splice(index, 1); // Remove if off-screen
         }
       });
     }
 
-    function checkCollisionsWithMartians() {
-      martians.forEach((m, index) => {
-        if (gameIsOver) return;
 
-        const dx = m.x - (position.x - playerImgWidth / 2);
-        const dy = m.y - (position.y - playerImgHeight / 2);
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        // Collision if distance is less than sum of half widths (approx)
-        if (dist < (invaderImgWidth / 2 + playerImgWidth / 2)) {
-          explode(position.x, position.y, "cyan"); // Player's explosion
-          explode(m.x, m.y, "orange"); // Martian's explosion
-          martians.splice(index, 1); // Remove martian
+    function checkCollisionsWithMartians() {
+      if (playerDestroyed) return;
+
+      for (let i = martians.length - 1; i >= 0; i--) {
+        const m = martians[i];
+
+        // Simplified distance check (center to center)
+        const dx = m.x - position.x; // Martian center X - Player center X
+        const dy = m.y - position.y; // Martian center Y - Player center Y
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // Collision if distance is less than sum of half radii (using a factor for better feel)
+        if (distance < (playerImgWidth / 2 + invaderImgWidth / 2) * 0.8) { 
+          playSound(audioPlayerExplosion);
+          createExplosion(position.x, position.y, "red", 50); // Player explosion
+          createExplosion(m.x, m.y, "orange", 30);      // Martian explosion
+          martians.splice(i, 1);                         // Remove martian
           playerDestroyed = true;
-          scheduleGameOverScreen(); // Player hit
+          scheduleGameOverScreen();                      // Trigger game over
+          break; // Player is destroyed, no need to check other martians
         }
-      });
+      }
     }
 
     function drawMartians() {
       martians.forEach(martian => {
-        const imageToDraw = invaderImage;
-        const imgWidth = invaderImgWidth;
-        const imgHeight = invaderImgHeight;
-        ctx.drawImage(imageToDraw, martian.x, martian.y, imgWidth, imgHeight);
+        // Dibujar la imagen del invasor centrada
+        if (martian.img && martian.img.complete && martian.img.naturalWidth !== 0) {
+          ctx.drawImage(martian.img, martian.x - invaderImgWidth / 2, martian.y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight);
+        } else {
+          // Fallback por si la imagen no carga o es el invaderRojo y no ha cargado
+          ctx.fillStyle = martian.hasLanded ? "darkred" : "purple";
+          ctx.fillRect(martian.x - invaderImgWidth / 2, martian.y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight);
+        }
       });
     }
 
@@ -479,37 +546,40 @@
       }
     }
 
-    function checkBulletMartianCollisions() {
-      for (let bIndex = bullets.length - 1; bIndex >= 0; bIndex--) {
-        for (let mIndex = martians.length - 1; mIndex >= 0; mIndex--) {
-          if (gameIsOver) return; // Stop processing if game over
-          const bullet = bullets[bIndex];
-          const martian = martians[mIndex];
 
-          // Check if bullet and martian still exist (might have been spliced in same loop iteration)
-          if (!bullet || !martian) continue;
+function checkBulletMartianCollisions() {
+  if (gameIsOver) return;
 
-          const dx = martian.x - bullet.x;
-          const dy = martian.y - bullet.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+  for (let i = bullets.length - 1; i >= 0; i--) {
+    const bullet = bullets[i];
+    // Ensure bullet exists if it was spliced in the same frame by another martian collision
+    if (!bullet) continue; 
 
-          if (dist < invaderImgWidth / 2 + 3) { // 3 is bullet radius
-            explode(martian.x, martian.y, "red");
-            martians.splice(mIndex, 1);
-            bullets.splice(bIndex, 1);
-            score += 10;
-            // Potentially create new martian
-            if (Math.random() < 0.15) { // 15% chance to spawn new one immediately
-              createMartian();
-            }
-            break; // Bullet can only hit one martian
-          }
-        }
+    for (let j = martians.length - 1; j >= 0; j--) {
+      const m = martians[j];
+
+      // Distance check between bullet center and martian center
+      const dx = m.x - bullet.x;
+      const dy = m.y - bullet.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Collision if distance is less than martian's half-width + bullet's effective radius
+      if (distance < invaderImgWidth / 2 + 3) { // 3 is a small buffer for bullet size/hitbox
+        playSound(audioInvaderDown); // Play martian destruction sound
+        createExplosion(m.x, m.y, "yellow", 20); // Martian explosion
+        martians.splice(j, 1);    // Remove martian
+        bullets.splice(i, 1);     // Remove bullet
+        score += 10;              // Increase score
+        // Optional: Add logic to spawn new martian if desired
+        // if (Math.random() < 0.1) createMartian(); 
+        break; // Bullet is consumed, no need to check against other martians for this bullet
       }
     }
+  }
+}
 
     function animate() {
-      if (isGameOver) {
+      if (gameIsOver) {
         // Game over message is handled by scheduleGameOverScreen
         // No need to call requestAnimationFrame again if game is over
         return;
@@ -534,9 +604,8 @@
 
       updateMartians();
       drawMartians();
-
-      updateExplosions();
-      drawExplosions();
+      updateExplosions(); // Update explosion particles
+      drawExplosions();   // Draw explosion particles
 
       if (!playerDestroyed) { // Only check collisions if player is active
         checkCollisionsWithMartians(); // Player vs Martian
@@ -558,18 +627,21 @@
     }
 
     function scheduleGameOverScreen() {
-      if (gameIsOver) return; // Prevent multiple calls if already game over
-      // Ensure gameOverDiv is defined (it's declared globally now)
-      if (!gameOverDiv) {
-        console.error("gameOverDiv is not defined!");
-        return;
-      }
-      gameIsOver = true;
-      gameOverDiv.style.display = "flex";
-      // The restartBtn in the HTML can be made to reload the page for a simple reset:
-      // e.g., by adding an onclick="window.location.reload()" to the button in HTML,
-      // or by adding an event listener for it elsewhere if preferred.
+  // Prevent multiple calls or if player not actually destroyed yet for this flow
+  // (playerDestroyed should be true when this is called from player-martian collision)
+  if (gameIsOver || !playerDestroyed) return; 
+
+  // Delay the actual game over state and message
+  setTimeout(() => {
+    gameIsOver = true; // Now stop the animation loop
+    if (gameOverDiv) { // Check if gameOverDiv exists
+        gameOverDiv.style.display = "flex";
     }
+    // The restartBtn in the HTML can be made to reload the page for a simple reset:
+    // e.g., by adding an onclick="window.location.reload()" to the button in HTML,
+    // or by adding an event listener for it elsewhere if preferred.
+  }, 1500); // 1.5 second delay to see explosion
+}
 
     animate();
   </script>
