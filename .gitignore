@@ -1,0 +1,53 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+.Trashes
+
+# IDE / Editor specific
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# package-lock.json # Uncomment if not strictly managing dependencies
+# yarn.lock # Uncomment if not strictly managing dependencies
+
+# Dependency directories (good to have even if not used yet)
+node_modules/
+bower_components/
+vendor/
+
+# Build output folders (if you add a build process later)
+dist/
+build/
+out/
+# public/ # Sometimes a build output, be careful if your source files are here
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+*~
+
+# Archives
+*.zip
+*.tar
+*.gz
+*.rar
+
+# User-specific files (like environment variables if they contain secrets)
+# .env

@@ -299,7 +299,7 @@
     const audioInvaderDown = new Audio('invader_down.wav');   // Sound for martian destroyed by bullet
     const audioEarthBang = new Audio('earth_bang.wav');     // Sound for Earth explosion
     const audioPremio = new Audio('premio.mp3'); // Sound for starting the game
-    const audioVoz = new Audio('voz.mp3'); // Sound for initial voice
+    const audioVoz = new Audio('musica_espacial.mp3'); // Sound for initial voice
 
     function playSound(sound) {
       if (sound && typeof sound.play === 'function') {
@@ -319,6 +319,7 @@
 
     let gameIsOver = false;
     let gameHasStarted = false;
+    let isPaused = false;
 
     // --- Código para cargar imágenes ---
     const playerImage = new Image();
@@ -332,6 +333,14 @@
     const invaderRojoImage = new Image();
     invaderRojoImage.onload = imageLoaded;
     invaderRojoImage.src = 'invader_rojo.png';
+
+    const invaderStrongImage = new Image();
+    invaderStrongImage.onload = imageLoaded;
+    invaderStrongImage.src = 'inveader_strong.png';
+
+    const invaderStrong2Image = new Image();
+    invaderStrong2Image.onload = imageLoaded;
+    invaderStrong2Image.src = 'invader_strong_2.png';
 
     let planeta = { img: null, x: 0, y: 0, width: 0, height: 0, targetY: 0, speed: 0, loaded: false, reachedTarget: false }; // Planeta state
 
@@ -347,15 +356,30 @@
     // Tamaños deseados para las imágenes (ajustar si es necesario)
     const playerImgWidth = 100; // 30 * 1.5
     const playerImgHeight = 100; // 30 * 1.5
-    const invaderImgWidth = 50; // Doubled size
-    const invaderImgHeight = 50; // Doubled size
+    let invaderImgWidth = 50; // Default width for normal invaders
+    let invaderImgHeight = 40; // Default height for normal invaders
+    let invaderStrongImgWidth = 40; // Default width for strong invaders
+    let invaderStrongImgHeight = 90; // Default height for strong invaders
+    let invaderStrong2ImgWidth = 65; // Desired width for landed strong invader (invader_strong_2)
+    let invaderStrong2ImgHeight = 65; // Desired height for landed strong invader (invader_strong_2)
+    // Inside imageLoaded()
+    // ...
+    if (this === invaderStrongImage) {
+      // ... (logic for invaderStrongImage)
+    }
 
+    if (this === invaderStrong2Image) { // This was from the diff in Step 152
+      invaderStrong2ImgWidth = this.naturalWidth > 0 ? this.naturalWidth : 35; // PROBLEM HERE
+      invaderStrong2ImgHeight = this.naturalHeight > 0 ? this.naturalHeight : 70; // PROBLEM HERE
+      console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W:", invaderStrong2ImgWidth, "H:", invaderStrong2ImgHeight);
+    }
+    // ...
     // Martian base speeds
     let martianBaseSpeedX = 1; // Base for horizontal speed calculation
     let martianBaseSpeedY = 0.15; // Base vertical speed
 
     let imagesLoadedCount = 0;
-    const totalImagesToLoad = 5; // Actualizado: 4 imágenes + 1 sonido (earth_bang)
+    const totalImagesToLoad = 7; // Actualizado: 6 imágenes + 1 sonido (player, invader, invader_rojo, invader_strong, invader_strong_2, planeta, earth_bang)
 
     // Función que se llama cuando una imagen ha terminado de cargar
     function imageLoaded() {
@@ -375,6 +399,24 @@
         } else {
           planeta.speed = 0.1; // Fallback speed if height is not available
         }
+      }
+
+      // Set dimensions for normal invader if not already set (example, adjust as needed)
+      if (this === invaderImage && invaderImage.complete) {
+        invaderImgWidth = 50;  // New width for normal invaders
+        invaderImgHeight = 40; // New height for normal invaders
+      }
+
+      // Set dimensions for strong invader
+      if (this === invaderStrongImage && invaderStrongImage.complete) {
+        invaderStrongImgWidth = 40; // New width for strong invaders
+        invaderStrongImgHeight = 90; // New height for strong invaders (taller)
+      }
+
+      if (this === invaderStrong2Image) {
+        invaderStrong2ImgWidth = 65; // Force to 65
+        invaderStrong2ImgHeight = 65; // Force to 65
+        console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W:", invaderStrong2ImgWidth, "H:", invaderStrong2ImgHeight);
       }
 
       imagesLoadedCount++;
@@ -403,6 +445,29 @@
         // If not reached target and animation is ongoing, it will adjust towards new targetY.
         // For a full reset on resize before target: 
         // if (!planeta.reachedTarget) { planeta.y = height; }
+      }
+    });
+
+    // Event listener for Pause (P key)
+    window.addEventListener('keydown', (event) => {
+      // Only allow pause/unpause if the game has started and is not over
+      if ((event.key === 'p' || event.key === 'P') && gameHasStarted && !gameIsOver) {
+        isPaused = !isPaused;
+        if (isPaused) {
+          // Optional: Pause atmospheric sound if it's playing
+          if (audioAtmosfera && !audioAtmosfera.paused) {
+            audioAtmosfera.pause();
+          }
+          playSound(audioPremio); // Play premio sound on pause
+        } else {
+          // Optional: Resume atmospheric sound if it was paused by the game
+          // and the game is still considered active (not game over)
+          if (audioAtmosfera && audioAtmosfera.paused) {
+            playSound(audioAtmosfera); // playSound handles .play() and errors
+          }
+          // When unpausing, the animate() loop will pick up naturally due to the
+          // requestAnimationFrame call within the paused animate() function.
+        }
       }
     });
 
@@ -552,144 +617,61 @@
     // Marcianos estilo Space Invaders
     let martians = [];
 
-    function drawMartian(x, y) {
-      // Dibujar la imagen del invasor centrada
-      if (invaderImage.complete && invaderImage.naturalWidth !== 0) {
-        ctx.drawImage(invaderImage, x - invaderImgWidth / 2, y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight);
+    function drawMartian(martian) { // CORRECTED: Takes the whole martian object
+      const widthToDraw = martian.mWidth || invaderImgWidth || 40; // Fallback width, uses martian.mWidth
+      const heightToDraw = martian.mHeight || invaderImgHeight || 30; // Fallback height, uses martian.mHeight
+      console.log('drawMartian - Type:', martian.type, 'Drawing W:', widthToDraw, 'H:', heightToDraw, 'Martian Object:', martian);
+
+      if (martian.img && martian.img.complete && martian.img.naturalWidth !== 0) {
+        ctx.drawImage(martian.img, martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw);
       } else {
-        // Fallback por si la imagen no carga
-        ctx.fillStyle = "purple"; // Color diferente para indicar error de carga
-        ctx.fillRect(x - invaderImgWidth / 2, y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight); // Un simple cuadrado como placeholder
+        // Fallback por si la imagen no carga o img es undefined
+        ctx.fillStyle = "red";
+        ctx.fillRect(martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw);
       }
     }
 
     function createMartian() {
       const x = Math.random() * (width - invaderImgWidth) + invaderImgWidth / 2;
-      const y = invaderImgHeight / 2; // Start at the top, adjusted for center
-      const vx = (Math.random() - 0.5) * 2 * martianBaseSpeedX; // Random horizontal speed
-      const vy = martianBaseSpeedY; // Consistent vertical speed
-      martians.push({ x, y, vx, vy, img: invaderImage, hasLanded: false });
-    }
+      const y = invaderImgHeight / 2;
+      const vx = (Math.random() - 0.5) * 2 * martianBaseSpeedX;
+      const vy = martianBaseSpeedY;
 
-    function updateMartians() {
-      if (gameIsOver) return;
-      martians.forEach((martian, index) => {
-        if (!martian.hasLanded) {
-          // Movement for non-landed martians
-          martian.x += martian.vx;
-          martian.y += martian.vy;
+      let type = 'normal';
+      let health = 1;
+      let martianImageToUse = invaderImage;
 
-          // Wall bouncing for non-landed martians
-          if (martian.x - invaderImgWidth / 2 < 0 || martian.x + invaderImgWidth / 2 > width) {
-            martian.vx *= -1;
-          }
-
-          // Check if martian reaches planet surface
-          if (planeta.loaded && planeta.reachedTarget) {
-            const planetRadius = planeta.width / 2;
-            const planetCenterX_onCanvas = planeta.x + planetRadius;
-            const planetCenterY_onCanvas = planeta.y + planetRadius; // Assumes planet image is circular and height == width
-
-            const dxMartianToPlanetCenter = martian.x - planetCenterX_onCanvas;
-
-            // Check if martian is horizontally within the planet's span for collision
-            if (Math.abs(dxMartianToPlanetCenter) < planetRadius) {
-              let termInsideSqrt = planetRadius * planetRadius - dxMartianToPlanetCenter * dxMartianToPlanetCenter;
-              // Ensure term is not negative due to potential floating point inaccuracies if dx is very close to radius
-              termInsideSqrt = Math.max(0, termInsideSqrt);
-              // yOnPlanetSurface is the y-coordinate on the upper circumference of the planet at martian's x
-              const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt);
-
-              // Check if the martian's bottom edge touches or is below this surface point
-              const landingDepthOffset = 1; // How many pixels 'into' the planet surface they should go
-              if (martian.y + invaderImgHeight / 2 >= yOnPlanetSurface + landingDepthOffset) {
-                martian.img = invaderRojoImage;
-                martian.hasLanded = true;
-                martian.vy = 0; // Stop vertical movement
-                martian.vx = 0; // Stop horizontal movement
-                // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface + landingDepthOffset
-                martian.y = (yOnPlanetSurface + landingDepthOffset) - invaderImgHeight / 2;
-                // Initialize properties for landed jitter movement
-                martian.originalLandedX = martian.x;
-                martian.originalLandedY = martian.y;
-                martian.jitterTargetX = martian.x; // Initial target is current position
-                martian.jitterTargetY = martian.y;
-                martian.jitterChangeTimer = 0;
-              }
-            }
-          } else if (martian.y > height + invaderImgHeight) { // Off-screen check for non-landed martians
-            martians.splice(index, 1); // Remove if off-screen
-          }
-        } else { // Martian has landed - apply slow drift jitter movement
-          if (typeof martian.originalLandedX !== 'undefined') { // Ensure original positions are set
-            const JITTER_RANGE = 20; // Total span (e.g., +/- 10px)
-            const JITTER_TARGET_UPDATE_INTERVAL = 120; // Frames (e.g., 2 seconds at 60fps)
-            const JITTER_DRIFT_SPEED = 0.02; // Lower is slower
-
-            martian.jitterChangeTimer++;
-            if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) {
-              martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE;
-              martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE;
-              martian.jitterChangeTimer = 0;
-            }
-
-            // Drift towards the target
-            martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED;
-            martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
-          }
-        }
-      });
-    }
-
-
-    function checkCollisionsWithMartians() {
-      if (playerDestroyed || playerIsInvulnerable) return; // Don't check if destroyed or invulnerable
-
-      for (let i = martians.length - 1; i >= 0; i--) {
-        const m = martians[i];
-
-        // Simplified distance check (center to center)
-        const dx = m.x - position.x; // Martian center X - Player center X
-        const dy = m.y - position.y; // Martian center Y - Player center Y
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        // Collision if distance is less than sum of half radii (using a factor for better feel)
-        if (distance < (playerImgWidth / 2 + invaderImgWidth / 2) * 0.8) {
-          playSound(audioPlayerExplosion);
-          createExplosion(position.x, position.y, "red", 60, 2, 6, 30, 70, 1.5, 5.5); // Player explosion
-          createExplosion(m.x, m.y, "orange", 40, 1, 5, 20, 55, 1, 4.5);      // Martian explosion
-          martians.splice(i, 1); // Remove martian that hit the player
-
-          playerLives--;
-          updateUI(); // Update lives display immediately
-
-          if (playerLives > 0) {
-            // Respawn player
-            position.x = width / 2;
-            position.y = height - playerImgHeight / 2 - 10; // Reset position
-            playerIsInvulnerable = true;
-            playerInvulnerableTimer = playerInvulnerabilityDuration;
-            // Player is not destroyed yet, game continues
-          } else {
-            // No lives left
-            playerDestroyed = true;
-            scheduleGameOverScreen(); // Trigger game over
-          }
-          break; // Collision handled, no need to check other martians for this frame
+      // Chance to spawn a strong invader if score is high enough
+      // and the strong invader image is loaded and valid
+      if (score >= 400 &&
+        typeof invaderStrongImage !== 'undefined' &&
+        invaderStrongImage.complete &&
+        invaderStrongImage.naturalWidth !== 0) {
+        if (Math.random() < 0.3) { // 30% chance for a strong invader
+          type = 'strong';
+          health = 5;
+          martianImageToUse = invaderStrongImage;
         }
       }
+
+      const martianAssignedWidth = (type === 'strong') ? invaderStrongImgWidth : invaderImgWidth;
+      const martianAssignedHeight = (type === 'strong') ? invaderStrongImgHeight : invaderImgHeight;
+
+      martians.push({
+        x, y, vx, vy,
+        img: martianImageToUse,
+        type: type,
+        health: health,
+        mWidth: martianAssignedWidth,
+        mHeight: martianAssignedHeight,
+        hasLanded: false
+      });
+      console.log('CREATE_MARTIAN_DEBUG: Storing type:', "'" + type + "'", 'Image SRC:', martianImageToUse.src);
     }
 
     function drawMartians() {
       martians.forEach(martian => {
-        // Dibujar la imagen del invasor centrada
-        if (martian.img && martian.img.complete && martian.img.naturalWidth !== 0) {
-          ctx.drawImage(martian.img, martian.x - invaderImgWidth / 2, martian.y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight);
-        } else {
-          // Fallback por si la imagen no carga o es el invaderRojo y no ha cargado
-          ctx.fillStyle = martian.hasLanded ? "darkred" : "purple";
-          ctx.fillRect(martian.x - invaderImgWidth / 2, martian.y - invaderImgHeight / 2, invaderImgWidth, invaderImgHeight);
-        }
+        drawMartian(martian); // CORRECTED: Pass the whole martian object
       });
     }
 
@@ -712,9 +694,6 @@
       ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
       ctx.fillRect(0, 0, width, height);
     }
-
-
-
 
     function updatePlayer() {
       if (playerDestroyed) return;
@@ -861,32 +840,178 @@
       }
     }
 
+    function checkCollisionsWithMartians() {
+      if (playerDestroyed || isGameOver) return; // Don't check if destroyed or game over
+
+      for (let i = martians.length - 1; i >= 0; i--) {
+        const m = martians[i];
+
+        // Simplified distance check (center to center)
+        const dx = m.x - position.x; // Martian center X - Player center X
+        const dy = m.y - position.y; // Martian center Y - Player center Y
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        if (distance < (playerImgWidth / 2 + m.mWidth / 2) * 0.8) {
+          playSound(audioPlayerExplosion);
+          createExplosion(position.x, position.y, "red", 60, 2, 6, 30, 70, 1.5, 5.5); // Player explosion
+          createExplosion(m.x, m.y, "orange", 40, 1, 5, 20, 55, 1, 4.5);      // Martian explosion
+          martians.splice(i, 1); // Remove martian that hit the player
+
+          playerLives--;
+          updateUI(); // Update lives display immediately
+
+          if (playerLives > 0) {
+            // Respawn player
+            position.x = width / 2;
+            position.y = height - playerImgHeight / 2 - 10; // Reset position
+            playerIsInvulnerable = true;
+            playerInvulnerableTimer = playerInvulnerabilityDuration;
+            // Player is not destroyed yet, game continues
+          } else {
+            // No lives left
+            playerDestroyed = true;
+            scheduleGameOverScreen(); // Trigger game over
+          }
+          break; // Collision handled, no need to check other martians for this frame
+        }
+      }
+    }
+
+    function updateMartians() {
+      if (gameIsOver) return;
+      martians.forEach((martian, index) => {
+        console.log('UPDATE_MARTIANS_DEBUG: Martian current type:', "'" + martian.type + "'");
+        if (!martian.hasLanded) {
+          // Movement for non-landed martians
+          martian.x += martian.vx;
+          martian.y += martian.vy;
+
+          // Wall bouncing for non-landed martians
+          if (martian.x - martian.mWidth / 2 < 0 || martian.x + martian.mWidth / 2 > width) {
+            martian.vx *= -1;
+          }
+
+          // Check if martian reaches planet surface
+          if (planeta.loaded && planeta.reachedTarget) {
+            const planetRadius = planeta.width / 2;
+            const planetCenterX_onCanvas = planeta.x + planetRadius;
+            const planetCenterY_onCanvas = planeta.y + planetRadius; // Assumes planet image is circular and height == width
+
+            const dxMartianToPlanetCenter = martian.x - planetCenterX_onCanvas;
+
+            // Check if martian is horizontally within the planet's span for collision
+            if (Math.abs(dxMartianToPlanetCenter) < planetRadius) {
+              let termInsideSqrt = planetRadius * planetRadius - dxMartianToPlanetCenter * dxMartianToPlanetCenter;
+              // Ensure term is not negative due to potential floating point inaccuracies if dx is very close to radius
+              termInsideSqrt = Math.max(0, termInsideSqrt);
+              // yOnPlanetSurface is the y-coordinate on the upper circumference of the planet at martian's x
+              const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt);
+
+              // Check if the martian's bottom edge touches or is below this surface point
+              const landingDepthOffset = 1; // How many pixels 'into' the planet surface they should go
+              if (martian.y + martian.mHeight / 2 >= yOnPlanetSurface + landingDepthOffset) {
+                console.log('UPDATE_MARTIANS_DEBUG: Landing. Martian current type:', "'" + martian.type + "'", 'Is type === "strong"?', (martian.type === 'strong'), 'Martian img src before change:', martian.img ? martian.img.src : 'N/A');
+                if (martian.type === 'strong') {
+                  martian.img = invaderStrong2Image;
+                } else {
+                  martian.img = invaderRojoImage;
+                }
+                martian.hasLanded = true;
+                martian.vy = 0; // Stop vertical movement
+                martian.vx = 0; // Stop horizontal movement
+                // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface + landingDepthOffset
+                martian.y = (yOnPlanetSurface + landingDepthOffset) - martian.mHeight / 2;
+                // Initialize properties for landed jitter movement
+                martian.originalLandedX = martian.x;
+                martian.originalLandedY = martian.y;
+                martian.jitterTargetX = martian.x; // Initial target is current position
+                martian.jitterTargetY = martian.y;
+                martian.jitterChangeTimer = 0;
+              }
+            }
+          } else if (martian.y > height + martian.mHeight) { // Off-screen check for non-landed martians
+            martians.splice(index, 1); // Remove if off-screen
+          }
+        } else { // Martian has landed - apply slow drift jitter movement
+          if (typeof martian.originalLandedX !== 'undefined') { // Ensure original positions are set
+            const JITTER_RANGE = 20; // Total span (e.g., +/- 10px)
+            const JITTER_TARGET_UPDATE_INTERVAL = 120; // Frames (e.g., 2 seconds at 60fps)
+            const JITTER_DRIFT_SPEED = 0.02; // Lower is slower
+
+            martian.jitterChangeTimer++;
+            if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) {
+              martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE;
+              martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE;
+              martian.jitterChangeTimer = 0;
+            }
+
+            // Drift towards the target
+            martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED;
+            martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
+          }
+        }
+      });
+    }
 
     function checkBulletMartianCollisions() {
       if (gameIsOver) return;
       for (let i = bullets.length - 1; i >= 0; i--) {
         const bullet = bullets[i];
-        // Ensure bullet exists if it was spliced in the same frame by another martian collision
-        if (!bullet) continue;
+        if (!bullet) continue; // Bullet might have been removed in the same loop iteration by another martian
 
         for (let j = martians.length - 1; j >= 0; j--) {
           const m = martians[j];
 
-          // Distance check between bullet center and martian center
           const dx = m.x - bullet.x;
           const dy = m.y - bullet.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          // Collision if distance is less than martian's half-width + bullet's effective radius
-          if (distance < invaderImgWidth / 2 + 3) { // 3 is a small buffer for bullet size/hitbox
-            playSound(audioInvaderDown); // Play martian destruction sound
-            createExplosion(m.x, m.y, "yellow", 30, 1, 4, 15, 45, 1, 3.5); // Martian explosion
-            martians.splice(j, 1);    // Remove martian
-            bullets.splice(i, 1);     // Remove bullet
-            score += 10;              // Increase score
-            // Optional: Add logic to spawn new martian if desired
-            // if (Math.random() < 0.1) createMartian(); 
-            break; // Bullet is consumed, no need to check against other martians for this bullet
+          if (distance < m.mWidth / 2 + 3) { // Collision detected
+            m.health -= 1; // Reduce health
+            bullets.splice(i, 1); // Remove bullet regardless of kill
+
+            if (m.health <= 0) { // Martian is destroyed
+              playSound(audioInvaderDown);
+              createExplosion(m.x, m.y, "yellow", 30, 1, 4, 15, 45, 1, 3.5); // Final destruction explosion
+              martians.splice(j, 1);
+              score += (m.type === 'strong' ? 25 : 10); // More points for strong invader
+            } else {
+              // Martian was hit but not destroyed
+              if (m.type === 'strong') {
+                const initialHealth = 5; // Health of strong invader when created
+                const hitsTaken = initialHealth - m.health; // Number of hits so far (1 to 4)
+
+                // Base parameters for hit feedback explosion
+                const baseHitColor = 'orangered';
+                const baseHitParticleCount = 8;
+                const baseHitMinSize = 1;
+                const baseHitMaxSize = 2;
+                const baseHitMinLife = 10;
+                const baseHitMaxLife = 25;
+                const baseHitMinSpeed = 0.5;
+                const baseHitMaxSpeed = 2;
+
+                // Scaled parameters based on hitsTaken
+                const scaledParticleCount = baseHitParticleCount + (hitsTaken * 4); // e.g., 12, 16, 20, 24
+                const scaledMaxSize = baseHitMaxSize + (hitsTaken * 0.75);      // e.g., 2.75, 3.5, 4.25, 5
+                const scaledMaxLife = baseHitMaxLife + (hitsTaken * 5);        // e.g., 30, 35, 40, 45
+
+                createExplosion(
+                  bullet.x, m.y, // Position of the hit impact
+                  baseHitColor,
+                  scaledParticleCount,
+                  baseHitMinSize, scaledMaxSize,
+                  baseHitMinLife, scaledMaxLife,
+                  baseHitMinSpeed, baseHitMaxSpeed
+                );
+                // Consider adding a specific 'hit' sound effect here if desired
+                // playSound(audioStrongInvaderHit); 
+              } else {
+                // Optional: Feedback for hitting a normal invader if they ever have > 1 health
+                // createExplosion(bullet.x, m.y, 'lightgray', 5, 1, 2, 5, 10, 0.5, 1);
+              }
+            }
+            break; // Bullet is consumed, stop checking this bullet against other martians
           }
         }
       }
@@ -897,6 +1022,19 @@
         // La animación de fondo (estrellas) se maneja en initialBackgroundAnimation
         return;
       }
+
+      // Handle Pause State
+      if (isPaused) {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent overlay
+        ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'white';
+        ctx.font = '48px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Juego Pausado', width / 2, height / 2);
+        requestAnimationFrame(animate); // Keep the loop alive to allow unpausing
+        return; // Skip game logic updates while paused
+      }
+
       if (gameIsOver) {
         // Game over message is handled by scheduleGameOverScreen
         // No need to call requestAnimationFrame again if game is over
