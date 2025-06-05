@@ -358,10 +358,10 @@
     const playerImgHeight = 100; // 30 * 1.5
     let invaderImgWidth = 50; // Default width for normal invaders
     let invaderImgHeight = 40; // Default height for normal invaders
-    let invaderStrongImgWidth = 40; // Default width for strong invaders
-    let invaderStrongImgHeight = 90; // Default height for strong invaders
-    let invaderStrong2ImgWidth = 65; // Desired width for landed strong invader (invader_strong_2)
-    let invaderStrong2ImgHeight = 65; // Desired height for landed strong invader (invader_strong_2)
+    let invaderStrongImgWidth = 65; // Default width for strong invaders
+    let invaderStrongImgHeight = 65; // Default height for strong invaders
+    const invaderStrong2ImgWidth = 65; // Desired width for landed strong invader (invader_strong_2)
+    const invaderStrong2ImgHeight = 65; // Desired height for landed strong invader (invader_strong_2)
     // Inside imageLoaded()
     // ...
     if (this === invaderStrongImage) {
@@ -401,16 +401,15 @@
         }
       }
 
-      // Set dimensions for normal invader if not already set (example, adjust as needed)
+      // Dimensions for invaderImage and invaderStrongImage are now set globally
+      // and will be used by createMartian().
+      // We no longer override them here.
       if (this === invaderImage && invaderImage.complete) {
-        invaderImgWidth = 50;  // New width for normal invaders
-        invaderImgHeight = 40; // New height for normal invaders
+        // console.log('invaderImage loaded, using global invaderImgWidth:', invaderImgWidth, 'invaderImgHeight:', invaderImgHeight);
       }
 
-      // Set dimensions for strong invader
       if (this === invaderStrongImage && invaderStrongImage.complete) {
-        invaderStrongImgWidth = 40; // New width for strong invaders
-        invaderStrongImgHeight = 90; // New height for strong invaders (taller)
+        // console.log('invaderStrongImage loaded, using global invaderStrongImgWidth:', invaderStrongImgWidth, 'invaderStrongImgHeight:', invaderStrongImgHeight);
       }
 
       if (this === invaderStrong2Image) {
@@ -741,15 +740,21 @@
         stars.push({
           x: Math.random() * width,
           y: Math.random() * height,
-          size: Math.random() * 2 + 0.5 // Min size 0.5
-          // speed property removed as stars are static
+          size: Math.random() * 2 + 0.5, // Min size 0.5
+          vy: Math.random() * 0.05 + 0.017 // Very slow vertical speed (approx 0.017 to 0.067)
         });
       }
     }
 
     function updateStars() {
-      // Stars are now static, so no updates to their positions needed here.
-      // If parallax effect is desired later, it would be added here.
+      stars.forEach(star => {
+        star.y += star.vy;
+        // If star moves off bottom, reset to top with a new x position
+        if (star.y > height + star.size) {
+          star.y = 0 - star.size;
+          star.x = Math.random() * width;
+        }
+      });
     }
 
     function drawStars() {
