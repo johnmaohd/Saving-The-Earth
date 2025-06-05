@@ -35,96 +35,77 @@
       background: #000;
     }
 
-    button {
-      padding: 5px 15px;
-      font-size: 14px;
+    button { /* General button styling, can be overridden */
+      padding: 0.5em 1em;
+      font-size: 1em;
     }
 
     #score {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      /* Position score to the right */
+      top: 2%;
+      right: 2%;
       color: white;
-      font-size: 18px;
+      font-size: 2vw;
       font-weight: bold;
       z-index: 1001;
     }
 
     #earthHealthContainer {
       position: absolute;
-      top: 10px;
-      left: 10px;
+      top: 2%;
+      left: 2%;
       display: flex;
-      /* Use flexbox for alignment */
       align-items: center;
-      /* Vertically align items in the middle */
       z-index: 1000;
-      /* Ensure it's above the canvas */
       color: white;
-      /* Text color for label */
       font-family: 'Arial', sans-serif;
-      font-size: 14px;
+      font-size: 1.8vw;
       font-weight: bold;
     }
 
     #earthHealthLabel {
-      margin-right: 8px;
-      /* Space between label and bar */
+      margin-right: 0.5em;
     }
 
     #livesDisplayContainer {
       position: absolute;
-      top: 35px;
-      /* Below Earth health */
-      left: 10px;
+      top: 7vh;
+      left: 2%;
       display: flex;
       align-items: center;
       color: white;
       font-family: 'Arial', sans-serif;
-      font-size: 14px;
+      font-size: 1.8vw;
       font-weight: bold;
       z-index: 1000;
     }
 
     #livesLabel {
-      margin-right: 5px;
+      margin-right: 0.3em;
     }
 
     #livesIcons img {
-      width: 50px;
-      /* Increased size (20px * 1.5) */
+      width: 5vw;
       height: auto;
-      margin-left: 1px;
-      /* Slightly increased margin for larger, rotated icons */
+      margin-left: 0.2em;
       transform: rotate(-45deg);
-      /* Rotate 45 degrees counter-clockwise */
-      /* Optional: Adjust vertical alignment if needed after rotation */
-      /* vertical-align: middle; */
     }
 
     #earthHealthBarOuter {
-      width: 150px;
-      /* Adjust width for the bar itself */
-      height: 18px;
-      /* Adjust height for the bar itself */
+      width: 20vw;
+      height: 2.5vh;
       border: 2px solid #FFF;
       background-color: #555;
-      border-radius: 5px;
+      border-radius: 0.5em;
       padding: 1px;
-      /* Small padding so inner bar doesn't touch border */
     }
 
     #earthHealthBar {
       height: 100%;
       width: 100%;
-      /* Starts full */
       background-color: #4CAF50;
-      /* Green for health */
-      border-radius: 3px;
-      /* Slightly rounded inner bar */
+      border-radius: 0.3em;
       transition: width 0.1s linear;
-      /* Smooth transition for health changes */
     }
 
     #gameOver {
@@ -134,50 +115,43 @@
       transform: translate(-50%, -50%);
       background: rgba(0, 0, 0, 0.7);
       color: white;
-      padding: 20px;
+      padding: 3vw;
       text-align: center;
-      font-size: 24px;
+      font-size: 4vw;
       display: none;
       z-index: 1002;
+      border-radius: 1em;
     }
 
     #gameOver button {
       background-color: #7bc307;
-      /* Un rosa vibrante o el color que prefieras */
       color: white;
       border: none;
-      border-radius: 25px;
-      /* Esquinas bien redondeadas */
-      padding: 12px 25px;
-      /* Más relleno */
-      font-size: 18px;
-      /* Un poco más grande */
+      border-radius: 1.5em;
+      padding: 0.8em 1.5em;
+      font-size: 2vw;
       font-weight: bold;
       font-family: 'Arial', sans-serif;
-      /* O una fuente más "juguetona" si la tienes */
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-      margin-top: 20px;
-      /* Más espacio arriba */
+      margin-top: 5%;
+      touch-action: manipulation; /* Improve touch responsiveness */
     }
 
     #gameOver button:hover {
       background-color: #77f10a;
-      /* Un tono más oscuro del rosa */
-      transform: translateY(-3px) scale(1.05);
-      /* Efecto de levantarse y crecer un poco */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-0.2em) scale(1.05);
+      box-shadow: 0 0.5em 1.2em rgba(0, 0, 0, 0.3);
       color: #717af9;
     }
 
     #gameOver button:active {
       background-color: #C51162;
-      /* Aún más oscuro al hacer clic */
       transform: translateY(0px) scale(1);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.1em 0.6em rgba(0, 0, 0, 0.2);
     }
 
     #startScreen {
@@ -186,64 +160,154 @@
       left: 50%;
       transform: translate(-50%, -50%);
       display: flex;
-      /* Cambiado a flex para mostrar por defecto */
       flex-direction: column;
       align-items: center;
       text-align: center;
       z-index: 1003;
-      /* Encima de todo lo demás inicialmente */
+      padding: 2em;
     }
 
     #startScreen img {
       max-width: 80%;
-      /* Ajusta según sea necesario */
       height: auto;
-      margin-bottom: 30px;
-      /* Espacio entre imagen y botón */
+      margin-bottom: 2em;
       border: 3px solid #7bc307;
-      /* Borde verde como el botón */
       border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0.6em 1.5em rgba(0, 0, 0, 0.5);
     }
 
     #startGameBtn {
       background-color: #7bc307;
-      /* Verde como el de reiniciar */
       color: white;
       border: none;
-      border-radius: 25px;
-      padding: 15px 35px;
-      /* Un poco más grande */
-      font-size: 22px;
-      /* Más grande */
+      border-radius: 1.5em;
+      padding: 1em 2em;
+      font-size: 2.5vw;
       font-weight: bold;
       font-family: 'Arial', sans-serif;
       cursor: pointer;
       text-transform: uppercase;
       letter-spacing: 1.5px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      touch-action: manipulation; /* Improve touch responsiveness */
     }
 
     #startGameBtn:hover {
       background-color: #6aa805;
-      /* Verde más oscuro */
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      transform: translateY(-0.2em) scale(1.05);
+      box-shadow: 0 0.5em 1.2em rgba(0, 0, 0, 0.3);
     }
 
     #startGameBtn:active {
       background-color: #589004;
-      /* Verde aún más oscuro */
       transform: translateY(0px) scale(1);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0.1em 0.6em rgba(0, 0, 0, 0.2);
     }
 
-    /* Ocultar elementos de la UI del juego inicialmente */
     #score,
     #earthHealthContainer,
     #livesDisplayContainer {
       display: none;
+    }
+
+    /* Touch Controls CSS */
+    #touchControlsContainer {
+        position: absolute;
+        bottom: 20px;
+        left: 0; /* Occupy full width */
+        right: 0; /* Occupy full width */
+        transform: none; /* Override previous centering */
+        display: none; /* Initially hidden, shown by JS when game starts */
+        z-index: 2000;
+        opacity: 0.7;
+        user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        display: flex; /* Use flex to arrange groups */
+        justify-content: space-between; /* Space out left and right groups */
+        align-items: center; /* Align items vertically */
+        padding: 0 20px; /* Add some padding on the sides */
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+
+    .touch-button {
+        background-color: rgba(100, 100, 100, 0.8);
+        color: white;
+        border: 2px solid rgba(200, 200, 200, 0.9);
+        border-radius: 10px;
+        font-weight: bold;
+        cursor: pointer;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        touch-action: manipulation;
+    }
+
+    .touch-button span {
+        display: block;
+    }
+
+    .arrow-button {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+        margin: 0 5px;
+    }
+
+    .shoot-button {
+        width: 100px;
+        height: 60px;
+        font-size: 18px;
+        margin: 0 20px;
+    }
+
+    #touchControlsLeft, #touchControlsRight {
+        display: flex;
+        align-items: center;
+    }
+
+    #touchLeft { order: 1; }
+    #touchUp { order: 2; margin-left: 10px !important; margin-right: 10px !important; }
+    #touchDown { order: 3; margin-right: 10px !important; }
+    #touchRight { order: 4; }
+
+
+    @media (max-width: 768px) {
+      #score { font-size: 2.5vw; top: 1.5%; right: 1.5%; }
+      #earthHealthContainer { font-size: 2.2vw; top: 1.5%; left: 1.5%; }
+      #earthHealthBarOuter { width: 25vw; height: 2.2vh; }
+      #livesDisplayContainer { font-size: 2.2vw; top: 6vh; left: 1.5%; }
+      #livesIcons img { width: 6vw; }
+      #gameOver { padding: 4vw; font-size: 5vw; }
+      #gameOver button { padding: 1em 1.8em; font-size: 2.5vw; margin-top: 4%; }
+      #startScreen img { margin-bottom: 1.5em; }
+      #startGameBtn { padding: 1.2em 2.5em; font-size: 3.5vw; }
+
+      /* Touch Controls - Tablet */
+      #touchControlsContainer { bottom: 15px; padding: 0 15px; }
+      .arrow-button { width: 55px; height: 55px; font-size: 22px; }
+      .shoot-button { width: 90px; height: 55px; font-size: 16px; }
+    }
+
+    @media (max-width: 480px) {
+      #score { font-size: 3.5vw; top: 1%; right: 2%; }
+      #earthHealthContainer { font-size: 3vw; top: 1%; left: 2%; }
+      #earthHealthBarOuter { width: 30vw; height: 3vh; }
+      #livesDisplayContainer { font-size: 3vw; top: 6vh; left: 2%; }
+      #livesIcons img { width: 7vw; }
+      #gameOver { padding: 5vw; font-size: 6vw; }
+      #gameOver button { padding: 1.2em 2em; font-size: 4vw; margin-top: 6%; }
+      #startScreen { padding: 1em; }
+      #startScreen img { margin-bottom: 1em; max-width: 90%; }
+      #startGameBtn { padding: 1.5em 2.5em; font-size: 5vw; }
+
+      /* Touch Controls - Mobile */
+      #touchControlsContainer { bottom: 10px; padding: 0 10px; opacity: 0.8; }
+      .arrow-button { width: 50px; height: 50px; font-size: 20px; margin: 0 3px; }
+      #touchUp { margin-left: 5px !important; margin-right: 5px !important; }
+      #touchDown { margin-right: 5px !important; }
+      .shoot-button { width: 80px; height: 50px; font-size: 14px; margin: 0 10px; }
     }
   </style>
 </head>
@@ -275,6 +339,18 @@
     <canvas id="flightCanvas"></canvas>
   </div>
 
+  <div id="touchControlsContainer">
+      <div id="touchControlsLeft">
+          <button id="touchLeft" class="touch-button arrow-button"><span>&#x2190;</span></button>
+          <button id="touchUp" class="touch-button arrow-button"><span>&#x2191;</span></button>
+          <button id="touchDown" class="touch-button arrow-button"><span>&#x2193;</span></button>
+          <button id="touchRight" class="touch-button arrow-button"><span>&#x2192;</span></button>
+      </div>
+      <div id="touchControlsRight">
+          <button id="touchShoot" class="touch-button shoot-button"><span>SHOOT</span></button>
+      </div>
+  </div>
+
   <script>
     const canvas = document.getElementById("flightCanvas");
     const ctx = canvas.getContext("2d");
@@ -282,24 +358,75 @@
     const gameOverMessage = document.getElementById('gameOverMessage');
     const restartBtn = document.getElementById('restartBtn');
 
-    // Elementos de la pantalla de inicio
     const startScreenDiv = document.getElementById('startScreen');
     const startGameBtn = document.getElementById('startGameBtn');
-    console.log('startGameBtn element:', startGameBtn); // DEBUG
-    // Estas ya están declaradas globalmente más abajo, nos aseguraremos de que esas globales se usen.
-    // const scoreDisplay = document.getElementById('score'); 
     const earthHealthBarDiv = document.getElementById('earthHealthBar');
-    const livesDisplayDiv = document.getElementById('livesIcons'); // Get the div for life icons
-    // No se necesita obtener scoreDisplay aquí, ya que se obtiene globalmente como scoreDisplayGlobal
+    const livesDisplayDiv = document.getElementById('livesIcons');
 
-    // --- Código para cargar Sonidos ---
-    const audioLaser = new Audio('laser.wav'); // Nuevo sonido para el disparo
-    const audioAtmosfera = new Audio('sonido_atmosferico.mp3'); // Ensure 'sonido_atmosferico.mp3' exists
-    const audioPlayerExplosion = new Audio('explosion-nave.mp3'); // Sound for player explosion
-    const audioInvaderDown = new Audio('invader_down.wav');   // Sound for martian destroyed by bullet
-    const audioEarthBang = new Audio('earth_bang.wav');     // Sound for Earth explosion
-    const audioPremio = new Audio('premio.mp3'); // Sound for starting the game
-    const audioVoz = new Audio('musica_espacial.mp3'); // Sound for initial voice
+    const scoreDisplayGlobal = document.getElementById('score');
+    const earthHealthContainerGlobal = document.getElementById('earthHealthContainer');
+    const livesDisplayContainerGlobal = document.getElementById('livesDisplayContainer');
+
+    // Touch Control Elements
+    const touchControlsContainer = document.getElementById('touchControlsContainer');
+    const touchLeftBtn = document.getElementById('touchLeft');
+    const touchRightBtn = document.getElementById('touchRight');
+    const touchUpBtn = document.getElementById('touchUp');
+    const touchDownBtn = document.getElementById('touchDown');
+    const touchShootBtn = document.getElementById('touchShoot');
+
+
+    // --- Base Constants for Scaling ---
+    const BASE_SCREEN_WIDTH = 1280;
+    const BASE_PLAYER_IMG_WIDTH = 100;
+    const BASE_PLAYER_IMG_HEIGHT = 100;
+    const BASE_INVADER_IMG_WIDTH = 50;
+    const BASE_INVADER_IMG_HEIGHT = 40;
+    const BASE_INVADER_STRONG_IMG_WIDTH = 65;
+    const BASE_INVADER_STRONG_IMG_HEIGHT = 65;
+    const BASE_INVADER_STRONG_2_IMG_WIDTH = 65;
+    const BASE_INVADER_STRONG_2_IMG_HEIGHT = 65;
+    const BASE_MAX_SPEED = 8;
+    const BASE_ACCELERATION_FACTOR = 0.03;
+    const BASE_BULLET_SPEED = 12;
+    const BASE_MARTIAN_BASE_SPEED_X = 1;
+    const BASE_MARTIAN_BASE_SPEED_Y = 0.15;
+    const BASE_BULLET_RADIUS = 3;
+    const BASE_EXPLOSION_MIN_SIZE = 2;
+    const BASE_EXPLOSION_MAX_SIZE = 5;
+    const BASE_EXPLOSION_MIN_SPEED = 1;
+    const BASE_EXPLOSION_MAX_SPEED = 3;
+    const BASE_EXPLOSION_MIN_LIFE = 20;
+    const BASE_EXPLOSION_MAX_LIFE = 60;
+
+
+    // --- Scaled Game Variables ---
+    let scaleFactor = 1;
+    let playerImgWidth = BASE_PLAYER_IMG_WIDTH;
+    let playerImgHeight = BASE_PLAYER_IMG_HEIGHT;
+    let invaderImgWidth = BASE_INVADER_IMG_WIDTH;
+    let invaderImgHeight = BASE_INVADER_IMG_HEIGHT;
+    let invaderStrongImgWidth = BASE_INVADER_STRONG_IMG_WIDTH;
+    let invaderStrongImgHeight = BASE_INVADER_STRONG_IMG_HEIGHT;
+    let invaderStrong2ImgWidth = BASE_INVADER_STRONG_2_IMG_WIDTH;
+    let invaderStrong2ImgHeight = BASE_INVADER_STRONG_2_IMG_HEIGHT;
+    let maxSpeed = BASE_MAX_SPEED;
+    let accelerationFactor = BASE_ACCELERATION_FACTOR;
+    let bulletSpeed = BASE_BULLET_SPEED;
+    let martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X;
+    let martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y;
+    let bulletRadius = BASE_BULLET_RADIUS;
+    let actualMinSpeed = BASE_MAX_SPEED * 0.10;
+
+
+    // --- Sound Loading ---
+    const audioLaser = new Audio('laser.wav');
+    const audioAtmosfera = new Audio('sonido_atmosferico.mp3');
+    const audioPlayerExplosion = new Audio('explosion-nave.mp3');
+    const audioInvaderDown = new Audio('invader_down.wav');
+    const audioEarthBang = new Audio('earth_bang.wav');
+    const audioPremio = new Audio('premio.mp3');
+    const audioVoz = new Audio('musica_espacial.mp3');
 
     function playSound(sound) {
       if (sound && typeof sound.play === 'function') {
@@ -308,205 +435,128 @@
       }
     }
 
-    // --- Fin del código para cargar Sonidos ---
-
-    // Referencias GLOBALES a elementos de la UI del juego que se mostrarán/ocultarán
-    // Estas se usan en initializeOrResetGame y updateUI
-    const scoreDisplayGlobal = document.getElementById('score');
-    const earthHealthContainerGlobal = document.getElementById('earthHealthContainer');
-    const livesDisplayContainerGlobal = document.getElementById('livesDisplayContainer');
-    // Nota: 'scoreDisplay' (sin Global) se obtiene localmente en updateUI, lo cual está bien.
-
+    // --- Game State Variables ---
     let gameIsOver = false;
     let gameHasStarted = false;
     let isPaused = false;
+    let playerDestroyed = false;
+    let firstShotFired = false;
+    let atmosphericSoundHasStarted = false;
+    let position = { x: 0, y: 0 };
+    let angle = 0;
+    let rotationSpeed = 0;
+    const MAX_EARTH_HEALTH = 100;
+    let earthHealth = MAX_EARTH_HEALTH;
+    let speed = 0;
+    const maxRotationSpeed = Math.PI / 180 * 2.5;
+    const rotationAcceleration = Math.PI / 180 * 0.15;
+    const rotationDamping = 0.92;
+    const keys = { up: false, down: false, left: false, right: false };
+    let stars = [];
+    let bullets = [];
+    let explosions = [];
+    let martians = [];
+    let score = 0;
+    const earthMaxHealth = 100;
+    let earthCurrentHealth = earthMaxHealth;
+    const damagePerLandedMartianPerFrame = 0.03;
+    let playerLives = 3;
+    const playerInvulnerabilityDuration = 180;
+    let playerIsInvulnerable = false;
+    let playerInvulnerableTimer = 0;
+    let planetHasExploded = false;
 
-    // --- Código para cargar imágenes ---
-    const playerImage = new Image();
-    playerImage.onload = imageLoaded;
-    playerImage.src = "nave.png";
 
-    const invaderImage = new Image();
-    invaderImage.onload = imageLoaded;
-    invaderImage.src = 'invader.png';
-
-    const invaderRojoImage = new Image();
-    invaderRojoImage.onload = imageLoaded;
-    invaderRojoImage.src = 'invader_rojo.png';
-
-    const invaderStrongImage = new Image();
-    invaderStrongImage.onload = imageLoaded;
-    invaderStrongImage.src = 'inveader_strong.png';
-
-    const invaderStrong2Image = new Image();
-    invaderStrong2Image.onload = imageLoaded;
-    invaderStrong2Image.src = 'invader_strong_2.png';
-
-    let planeta = { img: null, x: 0, y: 0, width: 0, height: 0, targetY: 0, speed: 0, loaded: false, reachedTarget: false }; // Planeta state
-
-    const planetaImage = new Image();
-    planetaImage.onload = imageLoaded;
-    planetaImage.src = "planeta.png";
-
-    // For sounds, 'oncanplaythrough' is often more appropriate than 'onload'
-    // The existing imageLoaded function will just increment the counter if 'this' is not a known image.
-    audioEarthBang.oncanplaythrough = imageLoaded;
-    audioEarthBang.load(); // Explicitly call load for audio elements
-
-    // Tamaños deseados para las imágenes (ajustar si es necesario)
-    const playerImgWidth = 100; // 30 * 1.5
-    const playerImgHeight = 100; // 30 * 1.5
-    let invaderImgWidth = 50; // Default width for normal invaders
-    let invaderImgHeight = 40; // Default height for normal invaders
-    let invaderStrongImgWidth = 65; // Default width for strong invaders
-    let invaderStrongImgHeight = 65; // Default height for strong invaders
-    const invaderStrong2ImgWidth = 65; // Desired width for landed strong invader (invader_strong_2)
-    const invaderStrong2ImgHeight = 65; // Desired height for landed strong invader (invader_strong_2)
-    // Inside imageLoaded()
-    // ...
-    if (this === invaderStrongImage) {
-      // ... (logic for invaderStrongImage)
-    }
-
-    if (this === invaderStrong2Image) { // This was from the diff in Step 152
-      invaderStrong2ImgWidth = this.naturalWidth > 0 ? this.naturalWidth : 35; // PROBLEM HERE
-      invaderStrong2ImgHeight = this.naturalHeight > 0 ? this.naturalHeight : 70; // PROBLEM HERE
-      console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W:", invaderStrong2ImgWidth, "H:", invaderStrong2ImgHeight);
-    }
-    // ...
-    // Martian base speeds
-    let martianBaseSpeedX = 1; // Base for horizontal speed calculation
-    let martianBaseSpeedY = 0.15; // Base vertical speed
-
+    // --- Image Loading ---
+    const playerImage = new Image(); playerImage.onload = imageLoaded; playerImage.src = "nave.png";
+    const invaderImage = new Image(); invaderImage.onload = imageLoaded; invaderImage.src = 'invader.png';
+    const invaderRojoImage = new Image(); invaderRojoImage.onload = imageLoaded; invaderRojoImage.src = 'invader_rojo.png';
+    const invaderStrongImage = new Image(); invaderStrongImage.onload = imageLoaded; invaderStrongImage.src = 'inveader_strong.png';
+    const invaderStrong2Image = new Image(); invaderStrong2Image.onload = imageLoaded; invaderStrong2Image.src = 'invader_strong_2.png';
+    let planeta = { img: null, x: 0, y: 0, width: 0, height: 0, targetY: 0, speed: 0, loaded: false, reachedTarget: false, baseWidth: 0, baseHeight: 0 };
+    const planetaImage = new Image(); planetaImage.onload = imageLoaded; planetaImage.src = "planeta.png";
+    audioEarthBang.oncanplaythrough = imageLoaded; audioEarthBang.load();
     let imagesLoadedCount = 0;
-    const totalImagesToLoad = 7; // Actualizado: 6 imágenes + 1 sonido (player, invader, invader_rojo, invader_strong, invader_strong_2, planeta, earth_bang)
+    const totalImagesToLoad = 7;
 
-    // Función que se llama cuando una imagen ha terminado de cargar
+
+    function updateScaledValues() {
+      scaleFactor = width / BASE_SCREEN_WIDTH;
+      playerImgWidth = BASE_PLAYER_IMG_WIDTH * scaleFactor;
+      playerImgHeight = BASE_PLAYER_IMG_HEIGHT * scaleFactor;
+      invaderImgWidth = BASE_INVADER_IMG_WIDTH * scaleFactor;
+      invaderImgHeight = BASE_INVADER_IMG_HEIGHT * scaleFactor;
+      invaderStrongImgWidth = BASE_INVADER_STRONG_IMG_WIDTH * scaleFactor;
+      invaderStrongImgHeight = BASE_INVADER_STRONG_IMG_HEIGHT * scaleFactor;
+      invaderStrong2ImgWidth = BASE_INVADER_STRONG_2_IMG_WIDTH * scaleFactor;
+      invaderStrong2ImgHeight = BASE_INVADER_STRONG_2_IMG_HEIGHT * scaleFactor;
+      maxSpeed = BASE_MAX_SPEED * scaleFactor;
+      actualMinSpeed = maxSpeed * 0.10;
+      if (speed === 0 && !gameHasStarted) { speed = actualMinSpeed; }
+      accelerationFactor = BASE_ACCELERATION_FACTOR * scaleFactor;
+      bulletSpeed = BASE_BULLET_SPEED * scaleFactor;
+      martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X * scaleFactor;
+      martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y * scaleFactor;
+      bulletRadius = BASE_BULLET_RADIUS * scaleFactor;
+      if (planeta.baseWidth && planeta.baseHeight) {
+        planeta.width = planeta.baseWidth * scaleFactor;
+        planeta.height = planeta.baseHeight * scaleFactor;
+        planeta.x = (width - planeta.width) / 2;
+        const newTargetY = height - (planeta.height / 2);
+        if (planeta.reachedTarget) { planeta.y = newTargetY; }
+        planeta.targetY = newTargetY;
+        if (planeta.height > 0) { planeta.speed = (planeta.height / 2) / (60 * 60) * scaleFactor; }
+        else { planeta.speed = 0.1 * scaleFactor; }
+      }
+      if (!gameHasStarted) { position.x = width / 2; position.y = height / 2; }
+    }
+
     function imageLoaded() {
       if (this === planetaImage) {
-        planeta.img = this; // Assign the loaded image object to planeta.img
-        planeta.loaded = true;
-        planeta.width = this.naturalWidth;
-        planeta.height = this.naturalHeight;
-        planeta.x = (width - planeta.width) / 2;
-        planeta.y = height; // Start below screen
-        planeta.targetY = height - (planeta.height / 2);
-        // Calculate speed for 1-minute animation (assuming 60 FPS)
-        // Distance to travel = planeta.height / 2
-        // Frames in 1 minute = 60 seconds * 60 FPS = 3600 frames
-        if (planeta.height > 0) { // Avoid division by zero if image fails to load height
-          planeta.speed = (planeta.height / 2) / (60 * 60);
-        } else {
-          planeta.speed = 0.1; // Fallback speed if height is not available
-        }
+        planeta.img = this; planeta.loaded = true;
+        planeta.baseWidth = this.naturalWidth; planeta.baseHeight = this.naturalHeight;
+        updateScaledValues();
+      } else if (this === invaderStrong2Image) {
+        console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W (base):", this.naturalWidth, "H (base):", this.naturalHeight);
       }
-
-      // Dimensions for invaderImage and invaderStrongImage are now set globally
-      // and will be used by createMartian().
-      // We no longer override them here.
-      if (this === invaderImage && invaderImage.complete) {
-        // console.log('invaderImage loaded, using global invaderImgWidth:', invaderImgWidth, 'invaderImgHeight:', invaderImgHeight);
-      }
-
-      if (this === invaderStrongImage && invaderStrongImage.complete) {
-        // console.log('invaderStrongImage loaded, using global invaderStrongImgWidth:', invaderStrongImgWidth, 'invaderStrongImgHeight:', invaderStrongImgHeight);
-      }
-
-      if (this === invaderStrong2Image) {
-        invaderStrong2ImgWidth = 65; // Force to 65
-        invaderStrong2ImgHeight = 65; // Force to 65
-        console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W:", invaderStrong2ImgWidth, "H:", invaderStrong2ImgHeight);
-      }
-
       imagesLoadedCount++;
       if (imagesLoadedCount === totalImagesToLoad) {
-        // Todas las imágenes están cargadas, iniciar el bucle de animación
-        createStars(); // Initialize stars
-        for (let i = 0; i < 3; i++) createMartian(); // Create some initial martians
-        animate();
+        createStars(); animate();
       }
     }
-    // --- Fin del código para cargar imágenes ---
+
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
+    position = { x: width / 2, y: height / 2 };
+    speed = actualMinSpeed;
+    updateScaledValues();
 
     window.addEventListener("resize", () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-
-      if (planeta.loaded) {
-        planeta.x = (width - planeta.width) / 2;
-        const newTargetY = height - (planeta.height / 2);
-        if (planeta.reachedTarget) {
-          planeta.y = newTargetY; // Keep it at its relative half-visible position
-        }
-        planeta.targetY = newTargetY; // Update target for ongoing animation or if reset
-        // If not reached target and animation is ongoing, it will adjust towards new targetY.
-        // For a full reset on resize before target: 
-        // if (!planeta.reachedTarget) { planeta.y = height; }
-      }
+      updateScaledValues();
     });
 
-    // Event listener for Pause (P key)
+    // Keyboard and Touch Event Handling
+    function handleTouch(event, keyName, isPressed) {
+        if (!gameHasStarted || gameIsOver || isPaused) return;
+        event.preventDefault();
+        if (keyName) { keys[keyName] = isPressed; }
+    }
+
     window.addEventListener('keydown', (event) => {
-      // Only allow pause/unpause if the game has started and is not over
       if ((event.key === 'p' || event.key === 'P') && gameHasStarted && !gameIsOver) {
         isPaused = !isPaused;
         if (isPaused) {
-          // Optional: Pause atmospheric sound if it's playing
-          if (audioAtmosfera && !audioAtmosfera.paused) {
-            audioAtmosfera.pause();
-          }
-          playSound(audioPremio); // Play premio sound on pause
+          if (audioAtmosfera && !audioAtmosfera.paused) audioAtmosfera.pause();
+          if (touchControlsContainer) touchControlsContainer.style.display = 'none'; // Hide touch controls when paused
+          playSound(audioPremio);
         } else {
-          // Optional: Resume atmospheric sound if it was paused by the game
-          // and the game is still considered active (not game over)
-          if (audioAtmosfera && audioAtmosfera.paused) {
-            playSound(audioAtmosfera); // playSound handles .play() and errors
-          }
-          // When unpausing, the animate() loop will pick up naturally due to the
-          // requestAnimationFrame call within the paused animate() function.
+          if (audioAtmosfera && audioAtmosfera.paused) playSound(audioAtmosfera);
+          if (touchControlsContainer) touchControlsContainer.style.display = 'flex'; // Show touch controls when unpaused
         }
       }
     });
-
-    // Estado del avión
-    let playerDestroyed = false;
-    let isGameOver = false; // Ensure it's globally defined
-    let firstShotFired = false; // For initial sound logic
-    let atmosphericSoundHasStarted = false; // For initial sound logic
-    let position = { x: width / 2, y: height / 2 };
-    let angle = 0;
-    // let speed = 0; // Original initial speed, now initialized to actualMinSpeed
-
-    // Planeta state is now declared globally earlier
-
-    // Variables para la física de rotación suave
-    let rotationSpeed = 0;
-
-    // Variables para la salud de la Tierra
-    const MAX_EARTH_HEALTH = 100;
-    let earthHealth = MAX_EARTH_HEALTH;
-    const earthHealthFill = document.getElementById('earth-health-fill');
-    const earthHealthText = document.getElementById('earth-health-text');
-    let lastHealthDrainTime = 0; // Will be set to Date.now() when game starts/resets
-    const healthDrainInterval = 1000; // 1 second in milliseconds
-    const maxRotationSpeed = Math.PI / 180 * 2.5; // Máximo 2.5 grados por frame
-    const rotationAcceleration = Math.PI / 180 * 0.15; // Aceleración de 0.15 grados por frame
-    const rotationDamping = 0.92; // Factor de amortiguación para la rotación
-    let maxSpeed = 8;
-    const actualMinSpeed = maxSpeed * 0.10; // Minimum speed is 10% of maxSpeed
-    let speed = actualMinSpeed; // Initialize speed to minimum speed
-    let accelerationFactor = 0.03;
-    // const minSpeed = 0.5; // Old minSpeed (0.5), replaced by actualMinSpeed
-
-    // Controles por teclado
-    const keys = {
-      up: false,
-      down: false,
-      left: false,
-      right: false
-    };
 
     document.addEventListener("keydown", (e) => {
       if (e.code === "ArrowUp") keys.up = true;
@@ -515,7 +565,6 @@
       if (e.code === "ArrowRight") keys.right = true;
       if (e.code === "Space") shoot();
     });
-
     document.addEventListener("keyup", (e) => {
       if (e.code === "ArrowUp") keys.up = false;
       if (e.code === "ArrowDown") keys.down = false;
@@ -523,361 +572,150 @@
       if (e.code === "ArrowRight") keys.right = false;
     });
 
-    // Estrellas
-    let stars = [];
-
-    // Balas (siempre más veloz que la nave)
-    let bullets = [];
-    const bulletSpeed = 12;
-
-    function shoot() {
-      if (playerDestroyed || isGameOver) return; // No disparar si el jugador está destruido o el juego terminó
-
-      if (!firstShotFired) {
-        if (!atmosphericSoundHasStarted && audioAtmosfera.paused) {
-          playSound(audioAtmosfera);
-          atmosphericSoundHasStarted = true;
-        }
-        firstShotFired = true;
-      }
-
-      playSound(audioLaser); // Sonido de láser para cada disparo
-
-      bullets.push({
-        x: position.x,
-        y: position.y,
-        vx: Math.cos(angle) * bulletSpeed,
-        vy: -Math.sin(angle) * bulletSpeed,
-        life: 100
-      });
+    if (touchLeftBtn) {
+        touchLeftBtn.addEventListener('touchstart', (e) => handleTouch(e, 'left', true), { passive: false });
+        touchLeftBtn.addEventListener('touchend', (e) => handleTouch(e, 'left', false), { passive: false });
+        touchLeftBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'left', false), { passive: false });
+    }
+    if (touchRightBtn) {
+        touchRightBtn.addEventListener('touchstart', (e) => handleTouch(e, 'right', true), { passive: false });
+        touchRightBtn.addEventListener('touchend', (e) => handleTouch(e, 'right', false), { passive: false });
+        touchRightBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'right', false), { passive: false });
+    }
+    if (touchUpBtn) {
+        touchUpBtn.addEventListener('touchstart', (e) => handleTouch(e, 'up', true), { passive: false });
+        touchUpBtn.addEventListener('touchend', (e) => handleTouch(e, 'up', false), { passive: false });
+        touchUpBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'up', false), { passive: false });
+    }
+    if (touchDownBtn) {
+        touchDownBtn.addEventListener('touchstart', (e) => handleTouch(e, 'down', true), { passive: false });
+        touchDownBtn.addEventListener('touchend', (e) => handleTouch(e, 'down', false), { passive: false });
+        touchDownBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'down', false), { passive: false });
+    }
+    if (touchShootBtn) {
+        touchShootBtn.addEventListener('touchstart', (e) => {
+            if (!gameHasStarted || gameIsOver || isPaused) return;
+            e.preventDefault();
+            shoot();
+        }, { passive: false });
     }
 
-    // --- Explosion Particle System ---
-    function createExplosion(x, y, color, count, minSize = 2, maxSize = 5, minLife = 20, maxLife = 60, minSpeed = 1, maxSpeed = 3) {
+
+    function shoot() {
+      if (playerDestroyed || isGameOver) return;
+      if (!firstShotFired) {
+        if (!atmosphericSoundHasStarted && audioAtmosfera.paused) { playSound(audioAtmosfera); atmosphericSoundHasStarted = true; }
+        firstShotFired = true;
+      }
+      playSound(audioLaser);
+      bullets.push({ x: position.x, y: position.y, vx: Math.cos(angle) * bulletSpeed, vy: -Math.sin(angle) * bulletSpeed, life: 100 });
+    }
+
+    function createExplosion(x, y, color, count, minSizeParam, maxSizeParam, minLifeParam, maxLifeParam, minSpeedParam, maxSpeedParam) {
+      const currentMinSize = (minSizeParam || BASE_EXPLOSION_MIN_SIZE) * scaleFactor;
+      const currentMaxSize = (maxSizeParam || BASE_EXPLOSION_MAX_SIZE) * scaleFactor;
+      const currentMinSpeed = (minSpeedParam || BASE_EXPLOSION_MIN_SPEED) * scaleFactor;
+      const currentMaxSpeed = (maxSpeedParam || BASE_EXPLOSION_MAX_SPEED) * scaleFactor;
+      const currentMinLife = minLifeParam || BASE_EXPLOSION_MIN_LIFE;
+      const currentMaxLife = maxLifeParam || BASE_EXPLOSION_MAX_LIFE;
       for (let i = 0; i < count; i++) {
-        const speedMagnitude = Math.random() * (maxSpeed - minSpeed) + minSpeed;
+        const speedMagnitude = Math.random() * (currentMaxSpeed - currentMinSpeed) + currentMinSpeed;
         const angle = Math.random() * Math.PI * 2;
-        explosions.push({
-          x: x,
-          y: y,
-          vx: Math.cos(angle) * speedMagnitude,
-          vy: Math.sin(angle) * speedMagnitude,
-          size: Math.random() * (maxSize - minSize) + minSize,
-          life: Math.random() * (maxLife - minLife) + minLife,
-          color: color,
-          alpha: 1 // Initial alpha for fading
-        });
+        explosions.push({ x: x, y: y, vx: Math.cos(angle) * speedMagnitude, vy: Math.sin(angle) * speedMagnitude, size: Math.random() * (currentMaxSize - currentMinSize) + currentMinSize, life: Math.random() * (currentMaxLife - currentMinLife) + currentMinLife, color: color, alpha: 1 });
       }
     }
 
     function updateExplosions() {
       for (let i = explosions.length - 1; i >= 0; i--) {
-        const p = explosions[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        p.alpha = p.life / 40; // Simple fade out, adjust 40 based on max life, ensure it's based on initial life range
-
-        if (p.life <= 0) {
-          explosions.splice(i, 1);
-        }
+        const p = explosions[i]; p.x += p.vx; p.y += p.vy; p.life--;
+        p.alpha = p.life / (BASE_EXPLOSION_MAX_LIFE / 1.5);
+        if (p.life <= 0) { explosions.splice(i, 1); }
       }
     }
 
     function drawExplosions() {
-      ctx.fillStyle = "white";
       explosions.forEach(p => {
-        ctx.save();
-        ctx.globalAlpha = Math.max(0, p.alpha); // Ensure alpha is not negative
-        ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
+        ctx.save(); ctx.globalAlpha = Math.max(0, p.alpha); ctx.fillStyle = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       });
-    }
-    // --- End Explosion Particle System ---
-
-    // Explosiones
-    let explosions = [];
-
-    function explode(x, y, color = "orange") {
-      for (let i = 0; i < 15; i++) {
-        explosions.push({
-          x, y,
-          vx: (Math.random() - 0.5) * 3,
-          vy: (Math.random() - 0.5) * 3,
-          life: 20,
-          color
-        });
-      }
-    }
-
-    // Marcianos estilo Space Invaders
-    let martians = [];
-
-    function drawMartian(martian) { // CORRECTED: Takes the whole martian object
-      const widthToDraw = martian.mWidth || invaderImgWidth || 40; // Fallback width, uses martian.mWidth
-      const heightToDraw = martian.mHeight || invaderImgHeight || 30; // Fallback height, uses martian.mHeight
-      console.log('drawMartian - Type:', martian.type, 'Drawing W:', widthToDraw, 'H:', heightToDraw, 'Martian Object:', martian);
-
-      if (martian.img && martian.img.complete && martian.img.naturalWidth !== 0) {
-        ctx.drawImage(martian.img, martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw);
-      } else {
-        // Fallback por si la imagen no carga o img es undefined
-        ctx.fillStyle = "red";
-        ctx.fillRect(martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw);
-      }
     }
 
     function createMartian() {
-      const x = Math.random() * (width - invaderImgWidth) + invaderImgWidth / 2;
-      const y = invaderImgHeight / 2;
+      const currentInvaderImgWidth = (Math.random() < 0.3 && score >= 400) ? invaderStrongImgWidth : invaderImgWidth;
+      const currentInvaderImgHeight = (Math.random() < 0.3 && score >= 400) ? invaderStrongImgHeight : invaderImgHeight;
+      const x = Math.random() * (width - currentInvaderImgWidth) + currentInvaderImgWidth / 2;
+      const y = currentInvaderImgHeight / 2;
       const vx = (Math.random() - 0.5) * 2 * martianBaseSpeedX;
       const vy = martianBaseSpeedY;
-
-      let type = 'normal';
-      let health = 1;
-      let martianImageToUse = invaderImage;
-
-      // Chance to spawn a strong invader if score is high enough
-      // and the strong invader image is loaded and valid
-      if (score >= 400 &&
-        typeof invaderStrongImage !== 'undefined' &&
-        invaderStrongImage.complete &&
-        invaderStrongImage.naturalWidth !== 0) {
-        if (Math.random() < 0.3) { // 30% chance for a strong invader
-          type = 'strong';
-          health = 5;
-          martianImageToUse = invaderStrongImage;
-        }
+      let type = 'normal'; let health = 1; let martianImageToUse = invaderImage;
+      let martianAssignedWidth = invaderImgWidth; let martianAssignedHeight = invaderImgHeight;
+      if (score >= 400 && typeof invaderStrongImage !== 'undefined' && invaderStrongImage.complete && invaderStrongImage.naturalWidth !== 0) {
+        if (Math.random() < 0.3) { type = 'strong'; health = 5; martianImageToUse = invaderStrongImage; martianAssignedWidth = invaderStrongImgWidth; martianAssignedHeight = invaderStrongImgHeight; }
       }
-
-      const martianAssignedWidth = (type === 'strong') ? invaderStrongImgWidth : invaderImgWidth;
-      const martianAssignedHeight = (type === 'strong') ? invaderStrongImgHeight : invaderImgHeight;
-
-      martians.push({
-        x, y, vx, vy,
-        img: martianImageToUse,
-        type: type,
-        health: health,
-        mWidth: martianAssignedWidth,
-        mHeight: martianAssignedHeight,
-        hasLanded: false
-      });
-      console.log('CREATE_MARTIAN_DEBUG: Storing type:', "'" + type + "'", 'Image SRC:', martianImageToUse.src);
+      martians.push({ x, y, vx, vy, img: martianImageToUse, type: type, health: health, mWidth: martianAssignedWidth, mHeight: martianAssignedHeight, hasLanded: false });
     }
 
-    function drawMartians() {
-      martians.forEach(martian => {
-        drawMartian(martian); // CORRECTED: Pass the whole martian object
-      });
+    function drawMartian(martian) {
+      const widthToDraw = martian.mWidth; const heightToDraw = martian.mHeight;
+      if (martian.img && martian.img.complete && martian.img.naturalWidth !== 0) {
+        ctx.drawImage(martian.img, martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw);
+      } else { ctx.fillStyle = "red"; ctx.fillRect(martian.x - widthToDraw / 2, martian.y - heightToDraw / 2, widthToDraw, heightToDraw); }
     }
-
-    // Puntuación
-    let score = 0;
-
-    // Earth Health System
-    const earthMaxHealth = 100;
-    let earthCurrentHealth = earthMaxHealth;
-    const damagePerLandedMartianPerFrame = 0.03; // Damage per landed martian per frame
-
-    // Player Lives System
-    let playerLives = 3;
-    const playerInvulnerabilityDuration = 180; // 3 seconds at 60fps
-    let playerIsInvulnerable = false;
-    let playerInvulnerableTimer = 0;
-    let planetHasExploded = false;
-
-    function clearCanvas() {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.3)";
-      ctx.fillRect(0, 0, width, height);
-    }
+    function drawMartians() { martians.forEach(drawMartian); }
+    function clearCanvas() { ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; ctx.fillRect(0, 0, width, height); }
 
     function updatePlayer() {
       if (playerDestroyed) return;
-      // Handle rotation
-      if (keys.left) rotationSpeed += rotationAcceleration; // Pressing left should turn left (e.g. positive rotation for -angle)
-      if (keys.right) rotationSpeed -= rotationAcceleration; // Pressing right should turn right (e.g. negative rotation for -angle)
-      rotationSpeed = Math.max(-maxRotationSpeed, Math.min(maxRotationSpeed, rotationSpeed));
-      rotationSpeed *= rotationDamping;
-      angle += rotationSpeed;
-
-      // Handle speed and movement
-      if (keys.up) speed += accelerationFactor;
-      else if (keys.down) speed -= accelerationFactor / 2; // Slower deceleration or braking
-      else speed -= accelerationFactor / 4; // Natural deceleration if no input
-
+      if (keys.left) rotationSpeed += rotationAcceleration; if (keys.right) rotationSpeed -= rotationAcceleration;
+      rotationSpeed = Math.max(-maxRotationSpeed, Math.min(maxRotationSpeed, rotationSpeed)); rotationSpeed *= rotationDamping; angle += rotationSpeed;
+      if (keys.up) speed += accelerationFactor; else if (keys.down) speed -= accelerationFactor / 2; else speed -= accelerationFactor / 4;
       speed = Math.max(actualMinSpeed, Math.min(maxSpeed, speed));
-
-      position.x += Math.cos(angle) * speed;
-      position.y -= Math.sin(angle) * speed;
-
-      // Boundary checks (simple wrap around)
-      if (position.x > width + playerImgWidth / 2) position.x = -playerImgWidth / 2;
-      if (position.x < -playerImgWidth / 2) position.x = width + playerImgWidth / 2;
-      if (position.y > height + playerImgHeight / 2) position.y = -playerImgHeight / 2;
-      if (position.y < -playerImgHeight / 2) position.y = height + playerImgHeight / 2;
+      position.x += Math.cos(angle) * speed; position.y -= Math.sin(angle) * speed;
+      const scaledPlayerWidthHalf = playerImgWidth / 2; const scaledPlayerHeightHalf = playerImgHeight / 2;
+      if (position.x > width + scaledPlayerWidthHalf) position.x = -scaledPlayerWidthHalf; if (position.x < -scaledPlayerWidthHalf) position.x = width + scaledPlayerWidthHalf;
+      if (position.y > height + scaledPlayerHeightHalf) position.y = -scaledPlayerHeightHalf; if (position.y < -scaledPlayerHeightHalf) position.y = height + scaledPlayerHeightHalf;
     }
 
     function drawPlayer() {
       if (playerDestroyed || !playerImage.complete || playerImage.naturalWidth === 0) return;
-
-      // Blinking effect during invulnerability
-      if (playerIsInvulnerable && (playerInvulnerableTimer % 20 < 10)) { // Blink off for 10 frames, on for 10 frames
-        return; // Skip drawing to make it blink
-      }
-
-      ctx.save();
-      ctx.translate(position.x, position.y);
-      ctx.rotate(-angle); // Player image 'nave.png' is assumed to point to the right by default
-      ctx.drawImage(playerImage, -playerImgWidth / 2, -playerImgHeight / 2, playerImgWidth, playerImgHeight);
-      ctx.restore();
+      if (playerIsInvulnerable && (playerInvulnerableTimer % 20 < 10)) return;
+      ctx.save(); ctx.translate(position.x, position.y); ctx.rotate(-angle);
+      ctx.drawImage(playerImage, -playerImgWidth / 2, -playerImgHeight / 2, playerImgWidth, playerImgHeight); ctx.restore();
     }
 
     function createStars() {
+      stars = [];
       for (let i = 0; i < 100; i++) {
-        stars.push({
-          x: Math.random() * width,
-          y: Math.random() * height,
-          size: Math.random() * 2 + 0.5, // Min size 0.5
-          vy: Math.random() * 0.05 + 0.017 // Very slow vertical speed (approx 0.017 to 0.067)
-        });
+        stars.push({ x: Math.random() * width, y: Math.random() * height, size: (Math.random() * 1.5 + 0.5) * scaleFactor, vy: (Math.random() * 0.05 + 0.017) * scaleFactor });
       }
     }
-
-    function updateStars() {
-      stars.forEach(star => {
-        star.y += star.vy;
-        // If star moves off bottom, reset to top with a new x position
-        if (star.y > height + star.size) {
-          star.y = 0 - star.size;
-          star.x = Math.random() * width;
-        }
-      });
-    }
-
-    function drawStars() {
-      ctx.fillStyle = "white";
-      stars.forEach(star => {
-        ctx.fillRect(star.x, star.y, star.size, star.size);
-      });
-    }
-
-    function updateBullets() {
-      for (let i = bullets.length - 1; i >= 0; i--) {
-        const bullet = bullets[i];
-        bullet.x += bullet.vx;
-        bullet.y += bullet.vy;
-        bullet.life--;
-        if (bullet.life <= 0 || bullet.x < 0 || bullet.x > width || bullet.y < 0 || bullet.y > height) {
-          bullets.splice(i, 1);
-        }
-      }
-    }
-
-    function drawBullets() {
-      ctx.fillStyle = "yellow";
-      bullets.forEach(bullet => {
-        ctx.beginPath();
-        ctx.arc(bullet.x, bullet.y, 3, 0, Math.PI * 2); // Bullet radius 3
-        ctx.fill();
-      });
-    }
-
-    function updateExplosions() {
-      for (let i = explosions.length - 1; i >= 0; i--) {
-        const p = explosions[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        if (p.life <= 0) {
-          explosions.splice(i, 1);
-        }
-      }
-    }
-
-    function drawExplosions() {
-      explosions.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.life / 20; // Fade out
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.life / 3 + 2, 0, Math.PI * 2); // Size based on life, min radius 2
-        ctx.fill();
-        ctx.globalAlpha = 1.0; // Reset alpha
-      });
-    }
-
-    function updatePlaneta() {
-      if (planeta.loaded && !planeta.reachedTarget) {
-        planeta.y -= planeta.speed; // Move up
-        if (planeta.y <= planeta.targetY) {
-          planeta.y = planeta.targetY;
-          planeta.reachedTarget = true;
-        }
-      }
-    }
+    function updateStars() { stars.forEach(star => { star.y += star.vy; if (star.y > height + star.size) { star.y = 0 - star.size; star.x = Math.random() * width; } }); }
+    function drawStars() { ctx.fillStyle = "white"; stars.forEach(star => { ctx.fillRect(star.x, star.y, star.size, star.size); }); }
+    function updateBullets() { for (let i = bullets.length - 1; i >= 0; i--) { const bullet = bullets[i]; bullet.x += bullet.vx; bullet.y += bullet.vy; bullet.life--; if (bullet.life <= 0 || bullet.x < 0 || bullet.x > width || bullet.y < 0 || bullet.y > height) { bullets.splice(i, 1); } } }
+    function drawBullets() { ctx.fillStyle = "yellow"; bullets.forEach(bullet => { ctx.beginPath(); ctx.arc(bullet.x, bullet.y, bulletRadius, 0, Math.PI * 2); ctx.fill(); }); }
+    function updatePlaneta() { if (planeta.loaded && !planeta.reachedTarget) { planeta.y -= planeta.speed; if (planeta.y <= planeta.targetY) { planeta.y = planeta.targetY; planeta.reachedTarget = true; } } }
 
     function drawPlaneta() {
-      if (planetHasExploded || !planeta.loaded || !planeta.img || !planeta.img.complete || planeta.img.naturalWidth === 0) {
-        return;
-      }
-
-      // Draw the base planet image
+      if (planetHasExploded || !planeta.loaded || !planeta.img || !planeta.img.complete || planeta.img.naturalWidth === 0) { return; }
       ctx.drawImage(planeta.img, planeta.x, planeta.y, planeta.width, planeta.height);
-
-      // Calculate damage intensity (0 = full health, 1 = zero health)
       const damageIntensity = Math.max(0, 1 - (earthCurrentHealth / earthMaxHealth));
-
       if (damageIntensity > 0) {
-        ctx.save();
-        // Apply red overlay, increasing opacity with damage
-        // Max alpha for red overlay can be set (e.g., 0.7 for 70% red at max damage)
-        ctx.globalAlpha = damageIntensity * 0.7;
-        ctx.fillStyle = 'red';
-        // Draw a circle over the planet area. Assuming planeta.x, planeta.y are top-left.
-        // Planet's center is (planeta.x + planeta.width / 2, planeta.y + planeta.height / 2)
-        // Radius is planeta.width / 2 (assuming it's roughly circular)
-        ctx.beginPath();
-        ctx.arc(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, planeta.width / 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore(); // Restores globalAlpha and other canvas states
+        ctx.save(); ctx.globalAlpha = damageIntensity * 0.7; ctx.fillStyle = 'red';
+        ctx.beginPath(); ctx.arc(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, planeta.width / 2, 0, Math.PI * 2); ctx.fill(); ctx.restore();
       }
     }
 
     function checkCollisionsWithMartians() {
-      if (playerDestroyed || isGameOver) return; // Don't check if destroyed or game over
-
+      if (playerDestroyed || isGameOver) return;
       for (let i = martians.length - 1; i >= 0; i--) {
-        const m = martians[i];
-
-        // Simplified distance check (center to center)
-        const dx = m.x - position.x; // Martian center X - Player center X
-        const dy = m.y - position.y; // Martian center Y - Player center Y
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
+        const m = martians[i]; const dx = m.x - position.x; const dy = m.y - position.y; const distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < (playerImgWidth / 2 + m.mWidth / 2) * 0.8) {
           playSound(audioPlayerExplosion);
-          createExplosion(position.x, position.y, "red", 60, 2, 6, 30, 70, 1.5, 5.5); // Player explosion
-          createExplosion(m.x, m.y, "orange", 40, 1, 5, 20, 55, 1, 4.5);      // Martian explosion
-          martians.splice(i, 1); // Remove martian that hit the player
-
-          playerLives--;
-          updateUI(); // Update lives display immediately
-
-          if (playerLives > 0) {
-            // Respawn player
-            position.x = width / 2;
-            position.y = height - playerImgHeight / 2 - 10; // Reset position
-            playerIsInvulnerable = true;
-            playerInvulnerableTimer = playerInvulnerabilityDuration;
-            // Player is not destroyed yet, game continues
-          } else {
-            // No lives left
-            playerDestroyed = true;
-            scheduleGameOverScreen(); // Trigger game over
-          }
-          break; // Collision handled, no need to check other martians for this frame
+          createExplosion(position.x, position.y, "red", 60, BASE_EXPLOSION_MIN_SIZE * 1.2, BASE_EXPLOSION_MAX_SIZE * 1.2, BASE_EXPLOSION_MIN_LIFE, BASE_EXPLOSION_MAX_LIFE, BASE_EXPLOSION_MIN_SPEED * 1.2, BASE_EXPLOSION_MAX_SPEED * 1.2);
+          createExplosion(m.x, m.y, "orange", 40); martians.splice(i, 1); playerLives--; updateUI();
+          if (playerLives > 0) { position.x = width / 2; position.y = height - playerImgHeight / 2 - (10 * scaleFactor); playerIsInvulnerable = true; playerInvulnerableTimer = playerInvulnerabilityDuration; }
+          else { playerDestroyed = true; scheduleGameOverScreen(); }
+          break;
         }
       }
     }
@@ -885,75 +723,27 @@
     function updateMartians() {
       if (gameIsOver) return;
       martians.forEach((martian, index) => {
-        console.log('UPDATE_MARTIANS_DEBUG: Martian current type:', "'" + martian.type + "'");
         if (!martian.hasLanded) {
-          // Movement for non-landed martians
-          martian.x += martian.vx;
-          martian.y += martian.vy;
-
-          // Wall bouncing for non-landed martians
-          if (martian.x - martian.mWidth / 2 < 0 || martian.x + martian.mWidth / 2 > width) {
-            martian.vx *= -1;
-          }
-
-          // Check if martian reaches planet surface
+          martian.x += martian.vx; martian.y += martian.vy;
+          if (martian.x - martian.mWidth / 2 < 0 || martian.x + martian.mWidth / 2 > width) { martian.vx *= -1; }
           if (planeta.loaded && planeta.reachedTarget) {
-            const planetRadius = planeta.width / 2;
-            const planetCenterX_onCanvas = planeta.x + planetRadius;
-            const planetCenterY_onCanvas = planeta.y + planetRadius; // Assumes planet image is circular and height == width
-
+            const planetRadius = planeta.width / 2; const planetCenterX_onCanvas = planeta.x + planetRadius; const planetCenterY_onCanvas = planeta.y + planetRadius;
             const dxMartianToPlanetCenter = martian.x - planetCenterX_onCanvas;
-
-            // Check if martian is horizontally within the planet's span for collision
             if (Math.abs(dxMartianToPlanetCenter) < planetRadius) {
-              let termInsideSqrt = planetRadius * planetRadius - dxMartianToPlanetCenter * dxMartianToPlanetCenter;
-              // Ensure term is not negative due to potential floating point inaccuracies if dx is very close to radius
-              termInsideSqrt = Math.max(0, termInsideSqrt);
-              // yOnPlanetSurface is the y-coordinate on the upper circumference of the planet at martian's x
-              const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt);
-
-              // Check if the martian's bottom edge touches or is below this surface point
-              const landingDepthOffset = 1; // How many pixels 'into' the planet surface they should go
+              let termInsideSqrt = planetRadius * planetRadius - dxMartianToPlanetCenter * dxMartianToPlanetCenter; termInsideSqrt = Math.max(0, termInsideSqrt);
+              const yOnPlanetSurface = planetCenterY_onCanvas - Math.sqrt(termInsideSqrt); const landingDepthOffset = 1 * scaleFactor;
               if (martian.y + martian.mHeight / 2 >= yOnPlanetSurface + landingDepthOffset) {
-                console.log('UPDATE_MARTIANS_DEBUG: Landing. Martian current type:', "'" + martian.type + "'", 'Is type === "strong"?', (martian.type === 'strong'), 'Martian img src before change:', martian.img ? martian.img.src : 'N/A');
-                if (martian.type === 'strong') {
-                  martian.img = invaderStrong2Image;
-                } else {
-                  martian.img = invaderRojoImage;
-                }
-                martian.hasLanded = true;
-                martian.vy = 0; // Stop vertical movement
-                martian.vx = 0; // Stop horizontal movement
-                // Position martian to sit on the surface, so its bottom edge is at yOnPlanetSurface + landingDepthOffset
-                martian.y = (yOnPlanetSurface + landingDepthOffset) - martian.mHeight / 2;
-                // Initialize properties for landed jitter movement
-                martian.originalLandedX = martian.x;
-                martian.originalLandedY = martian.y;
-                martian.jitterTargetX = martian.x; // Initial target is current position
-                martian.jitterTargetY = martian.y;
-                martian.jitterChangeTimer = 0;
+                if (martian.type === 'strong') { martian.img = invaderStrong2Image; martian.mWidth = invaderStrong2ImgWidth; martian.mHeight = invaderStrong2ImgHeight; } else { martian.img = invaderRojoImage; }
+                martian.hasLanded = true; martian.vy = 0; martian.vx = 0; martian.y = (yOnPlanetSurface + landingDepthOffset) - martian.mHeight / 2;
+                martian.originalLandedX = martian.x; martian.originalLandedY = martian.y; martian.jitterTargetX = martian.x; martian.jitterTargetY = martian.y; martian.jitterChangeTimer = 0;
               }
             }
-          } else if (martian.y > height + martian.mHeight) { // Off-screen check for non-landed martians
-            martians.splice(index, 1); // Remove if off-screen
-          }
-        } else { // Martian has landed - apply slow drift jitter movement
-          if (typeof martian.originalLandedX !== 'undefined') { // Ensure original positions are set
-            const JITTER_RANGE = 20; // Total span (e.g., +/- 10px)
-            const JITTER_TARGET_UPDATE_INTERVAL = 120; // Frames (e.g., 2 seconds at 60fps)
-            const JITTER_DRIFT_SPEED = 0.02; // Lower is slower
-
-            martian.jitterChangeTimer++;
-            if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) {
-              martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE;
-              martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE;
-              martian.jitterChangeTimer = 0;
-            }
-
-            // Drift towards the target
-            martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED;
-            martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
-          }
+          } else if (martian.y > height + martian.mHeight) { martians.splice(index, 1); }
+        } else {
+          const JITTER_RANGE = 20 * scaleFactor; const JITTER_TARGET_UPDATE_INTERVAL = 120; const JITTER_DRIFT_SPEED = 0.02;
+          martian.jitterChangeTimer++;
+          if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) { martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE; martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE; martian.jitterChangeTimer = 0; }
+          martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED; martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
         }
       });
     }
@@ -961,379 +751,100 @@
     function checkBulletMartianCollisions() {
       if (gameIsOver) return;
       for (let i = bullets.length - 1; i >= 0; i--) {
-        const bullet = bullets[i];
-        if (!bullet) continue; // Bullet might have been removed in the same loop iteration by another martian
-
+        const bullet = bullets[i]; if (!bullet) continue;
         for (let j = martians.length - 1; j >= 0; j--) {
-          const m = martians[j];
-
-          const dx = m.x - bullet.x;
-          const dy = m.y - bullet.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < m.mWidth / 2 + 3) { // Collision detected
-            m.health -= 1; // Reduce health
-            bullets.splice(i, 1); // Remove bullet regardless of kill
-
-            if (m.health <= 0) { // Martian is destroyed
-              playSound(audioInvaderDown);
-              createExplosion(m.x, m.y, "yellow", 30, 1, 4, 15, 45, 1, 3.5); // Final destruction explosion
-              martians.splice(j, 1);
-              score += (m.type === 'strong' ? 25 : 10); // More points for strong invader
-            } else {
-              // Martian was hit but not destroyed
-              if (m.type === 'strong') {
-                const initialHealth = 5; // Health of strong invader when created
-                const hitsTaken = initialHealth - m.health; // Number of hits so far (1 to 4)
-
-                // Base parameters for hit feedback explosion
-                const baseHitColor = 'orangered';
-                const baseHitParticleCount = 8;
-                const baseHitMinSize = 1;
-                const baseHitMaxSize = 2;
-                const baseHitMinLife = 10;
-                const baseHitMaxLife = 25;
-                const baseHitMinSpeed = 0.5;
-                const baseHitMaxSpeed = 2;
-
-                // Scaled parameters based on hitsTaken
-                const scaledParticleCount = baseHitParticleCount + (hitsTaken * 4); // e.g., 12, 16, 20, 24
-                const scaledMaxSize = baseHitMaxSize + (hitsTaken * 0.75);      // e.g., 2.75, 3.5, 4.25, 5
-                const scaledMaxLife = baseHitMaxLife + (hitsTaken * 5);        // e.g., 30, 35, 40, 45
-
-                createExplosion(
-                  bullet.x, m.y, // Position of the hit impact
-                  baseHitColor,
-                  scaledParticleCount,
-                  baseHitMinSize, scaledMaxSize,
-                  baseHitMinLife, scaledMaxLife,
-                  baseHitMinSpeed, baseHitMaxSpeed
-                );
-                // Consider adding a specific 'hit' sound effect here if desired
-                // playSound(audioStrongInvaderHit); 
-              } else {
-                // Optional: Feedback for hitting a normal invader if they ever have > 1 health
-                // createExplosion(bullet.x, m.y, 'lightgray', 5, 1, 2, 5, 10, 0.5, 1);
-              }
-            }
-            break; // Bullet is consumed, stop checking this bullet against other martians
+          const m = martians[j]; const dx = m.x - bullet.x; const dy = m.y - bullet.y; const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < m.mWidth / 2 + bulletRadius) {
+            m.health -= 1; bullets.splice(i, 1);
+            if (m.health <= 0) { playSound(audioInvaderDown); createExplosion(m.x, m.y, "yellow", 30); martians.splice(j, 1); score += (m.type === 'strong' ? 25 : 10); }
+            else { if (m.type === 'strong') { const initialHealth = 5; const hitsTaken = initialHealth - m.health; const baseHitParticleCount = 8; const scaledParticleCount = baseHitParticleCount + (hitsTaken * 4); createExplosion(bullet.x, m.y, 'orangered', scaledParticleCount, BASE_EXPLOSION_MIN_SIZE, BASE_EXPLOSION_MAX_SIZE + (hitsTaken * 0.75), BASE_EXPLOSION_MIN_LIFE, BASE_EXPLOSION_MAX_LIFE + (hitsTaken * 5), BASE_EXPLOSION_MIN_SPEED, BASE_EXPLOSION_MAX_SPEED ); } }
+            break;
           }
         }
       }
     }
 
     function animate() {
-      if (!gameHasStarted) { // Si el juego no ha comenzado, no hacer nada en este bucle
-        // La animación de fondo (estrellas) se maneja en initialBackgroundAnimation
-        return;
-      }
-
-      // Handle Pause State
+      if (!gameHasStarted && !isPaused) { requestAnimationFrame(initialBackgroundAnimation); return; }
+      if (!gameHasStarted && isPaused) { requestAnimationFrame(animate); return; }
       if (isPaused) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent overlay
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = 'white';
-        ctx.font = '48px Arial';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; ctx.fillRect(0, 0, width, height);
+        ctx.fillStyle = 'white'; ctx.font = `${48 * scaleFactor}px Arial`; ctx.textAlign = 'center';
         ctx.fillText('Juego Pausado', width / 2, height / 2);
-        requestAnimationFrame(animate); // Keep the loop alive to allow unpausing
-        return; // Skip game logic updates while paused
+        requestAnimationFrame(animate); return;
       }
-
-      if (gameIsOver) {
-        // Game over message is handled by scheduleGameOverScreen
-        // No need to call requestAnimationFrame again if game is over
-        return;
-      }
-
-      requestAnimationFrame(animate);
-      clearCanvas();
-
-      updateStars();
-      drawStars();
-
-      updatePlaneta();
-      drawPlaneta();
-
-      // Handle player invulnerability timer
-      if (playerIsInvulnerable) {
-        playerInvulnerableTimer--;
-        if (playerInvulnerableTimer <= 0) {
-          playerIsInvulnerable = false;
-        }
-      }
-
-      if (!playerDestroyed) {
-        updatePlayer();
-        drawPlayer();
-      }
-
-      updateBullets();
-      drawBullets();
-
-      updateMartians();
-      drawMartians();
-      updateExplosions(); // Update explosion particles
-      drawExplosions();   // Draw explosion particles
-
-      // Earth health drain by landed martians & game over check
+      if (gameIsOver) return;
+      requestAnimationFrame(animate); clearCanvas(); updateStars(); drawStars(); updatePlaneta(); drawPlaneta();
+      if (playerIsInvulnerable) { playerInvulnerableTimer--; if (playerInvulnerableTimer <= 0) playerIsInvulnerable = false; }
+      if (!playerDestroyed) { updatePlayer(); drawPlayer(); }
+      updateBullets(); drawBullets(); updateMartians(); drawMartians(); updateExplosions(); drawExplosions();
       if (!gameIsOver && !playerDestroyed) {
-        let landedMartiansOnPlanet = 0;
-        for (const m of martians) {
-          if (m.hasLanded) {
-            landedMartiansOnPlanet++;
-            earthCurrentHealth -= damagePerLandedMartianPerFrame;
-          }
-        }
-        earthCurrentHealth = Math.max(0, earthCurrentHealth); // Prevent negative health
-
+        let landedMartiansOnPlanet = 0; martians.forEach(m => { if (m.hasLanded) landedMartiansOnPlanet++; });
+        earthCurrentHealth -= landedMartiansOnPlanet * damagePerLandedMartianPerFrame; earthCurrentHealth = Math.max(0, earthCurrentHealth);
         if (earthCurrentHealth <= 0) {
-          if (!planetHasExploded) { // Explode only once
-            planetHasExploded = true;
-            // Create a large explosion for the planet
-            createExplosion(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, 'white', 500, 5, 30, 80, 200, 2, 10);
-            playSound(audioEarthBang);
-            // Optionally, add a screen shake here
-          }
-          playerDestroyed = true; // Player is also considered destroyed/game over
-          scheduleGameOverScreen();
-        } // Closes if (earthCurrentHealth <= 0)
-      } // Closes if (!gameIsOver && !playerDestroyed)
-
-      if (!playerDestroyed) { // Only check collisions if player is active
-        checkCollisionsWithMartians(); // Player vs Martian
-        checkBulletMartianCollisions(); // Bullet vs Martian
+          if (!planetHasExploded) { planetHasExploded = true; createExplosion(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, 'white', 500, BASE_EXPLOSION_MIN_SIZE * 2.5, BASE_EXPLOSION_MAX_SIZE * 6, BASE_EXPLOSION_MIN_LIFE * 1.3, BASE_EXPLOSION_MAX_LIFE * 1.3, BASE_EXPLOSION_MIN_SPEED * 1, BASE_EXPLOSION_MAX_SPEED * 1.5); playSound(audioEarthBang); }
+          playerDestroyed = true; scheduleGameOverScreen();
+        }
       }
-
-      updateUI();
-
-      // Continuously try to spawn a new martian
-      if (Math.random() < 0.01) { // 2% chance per frame to spawn a martian
-        createMartian();
-      }
+      if (!playerDestroyed) { checkCollisionsWithMartians(); checkBulletMartianCollisions(); }
+      updateUI(); if (Math.random() < 0.01) createMartian();
     }
 
     function updateUI() {
-      // Usa la referencia global para el score si es necesario, o la local si está definida aquí.
-      // Para consistencia y evitar errores de scope, usamos la global.
       if (scoreDisplayGlobal) scoreDisplayGlobal.textContent = `Puntuación: ${score}`;
-      // const scoreDisplay = document.getElementById('score'); // Esta es local, si la prefieres, asegúrate que esté definida. Si no, usa la global.
-      // scoreDisplay.textContent = `Puntuación: ${score}`;
-      if (earthHealthBarDiv) {
-        const healthPercentage = (earthCurrentHealth / earthMaxHealth) * 100;
-        earthHealthBarDiv.style.width = `${healthPercentage}%`;
-      }
-
-      // Update lives display
+      if (earthHealthBarDiv) { const healthPercentage = (earthCurrentHealth / earthMaxHealth) * 100; earthHealthBarDiv.style.width = `${healthPercentage}%`; }
       if (livesDisplayDiv && playerImage.complete && playerImage.naturalWidth !== 0) {
-        livesDisplayDiv.innerHTML = ''; // Clear existing life icons
-        // Display icons for spare lives (playerLives - 1)
-        // Ensure playerLives is at least 1 before trying to show N-1 icons
-        const spareLivesToShow = Math.max(0, playerLives - 1);
-        for (let i = 0; i < spareLivesToShow; i++) {
-          const lifeIcon = document.createElement('img');
-          lifeIcon.src = playerImage.src;
-          // CSS will style the size via #livesIcons img
-          livesDisplayDiv.appendChild(lifeIcon);
-        }
+        livesDisplayDiv.innerHTML = ''; const spareLivesToShow = Math.max(0, playerLives - 1);
+        for (let i = 0; i < spareLivesToShow; i++) { const lifeIcon = document.createElement('img'); lifeIcon.src = playerImage.src; livesDisplayDiv.appendChild(lifeIcon); }
       }
-      // updateEarthHealthDisplay(); // Function removed
-      // speedValue.textContent = `Velocidad: ${Math.abs(speed).toFixed(1)}`; // Control removed
     }
 
     function scheduleGameOverScreen() {
       if (gameIsOver || !playerDestroyed) return;
-
-      // Primero, mostrar solo el mensaje de Game Over
-      if (gameOverDiv && gameOverMessage && restartBtn) {
-        gameOverMessage.style.display = "block";
-        restartBtn.style.display = "none";
-        gameOverDiv.style.display = "flex";
-      }
-
-      // Después de un tiempo, ocultar mensaje y mostrar botón
+      if (gameOverDiv && gameOverMessage && restartBtn) { gameOverMessage.style.display = "block"; restartBtn.style.display = "none"; gameOverDiv.style.display = "flex"; }
+      if (touchControlsContainer) { touchControlsContainer.style.display = 'none'; } // Hide touch controls
       setTimeout(() => {
         if (gameOverMessage) gameOverMessage.style.display = "none";
         if (restartBtn) restartBtn.style.display = "block";
-        gameIsOver = true; // Detener el bucle de animación principal aquí o dentro de animate()
-      }, 3000); // 3 segundos para leer "Game Over", luego aparece el botón
+        gameIsOver = true;
+      }, 3000);
     }
 
     function initializeOrResetGame() {
-      // Ocultar pantalla de Game Over si estuviera visible
       if (gameOverDiv) gameOverDiv.style.display = "none";
-
-      // Resetear variables del juego
-      score = 0;
-      playerLives = 3; // Restablecer a la cantidad inicial de vidas.
-      earthHealth = MAX_EARTH_HEALTH; // Usar la constante definida
-
-      // Resetear estado del jugador
-      position.x = width / 2 - playerImgWidth / 2; // Posición inicial X (centrado)
-      position.y = height - playerImgHeight - 30;  // Posición inicial Y (cerca del fondo)
-      angle = 0; // Ángulo inicial (ej. apuntando hacia arriba o adelante)
-      speed = actualMinSpeed; // Restablecer a la velocidad mínima/inicial
-      rotationSpeed = 0; // Restablecer velocidad de rotación
-      playerDestroyed = false;
-      playerIsInvulnerable = false; // Asegurarse de no ser invulnerable al inicio
-      playerInvulnerableTimer = 0;
-
-      // Resetear estado de las teclas
-      keys.up = false;
-      keys.down = false;
-      keys.left = false;
-      keys.right = false;
-
-      // Resetear flags de sonido iniciales
-      firstShotFired = false;
-      atmosphericSoundHasStarted = false;
-      // Parar y resetear sonidos si es necesario (ej. atmósfera)
-      if (audioAtmosfera && typeof audioAtmosfera.pause === 'function') {
-        audioAtmosfera.pause();
-        audioAtmosfera.currentTime = 0;
-      }
-
-      // Limpiar arrays de juego
-      bullets = [];
-      martians = [];
-      explosions = [];
-
-      // Recrear elementos iniciales
-      createMartianInitialWave();
-      // createStars(); // Las estrellas ya se crean y animan desde el inicio
-
-      gameIsOver = false;
-      gameHasStarted = true; // Marcar que el juego ha comenzado
-
-      // Mostrar UI del juego
+      score = 0; playerLives = 3; earthHealth = MAX_EARTH_HEALTH; earthCurrentHealth = MAX_EARTH_HEALTH; planetHasExploded = false;
+      position.x = width / 2; position.y = height - playerImgHeight - (30 * scaleFactor); angle = 0; speed = actualMinSpeed; rotationSpeed = 0;
+      playerDestroyed = false; playerIsInvulnerable = false; playerInvulnerableTimer = 0;
+      keys.up = false; keys.down = false; keys.left = false; keys.right = false;
+      firstShotFired = false; atmosphericSoundHasStarted = false;
+      if (audioAtmosfera && typeof audioAtmosfera.pause === 'function') { audioAtmosfera.pause(); audioAtmosfera.currentTime = 0; }
+      bullets = []; martians = []; explosions = [];
+      updateScaledValues(); createStars(); createMartianInitialWave();
+      gameIsOver = false; gameHasStarted = true;
       if (scoreDisplayGlobal) scoreDisplayGlobal.style.display = 'block';
-      if (earthHealthContainerGlobal) earthHealthContainerGlobal.style.display = 'flex'; // o 'block' según diseño
-      if (livesDisplayContainerGlobal) livesDisplayContainerGlobal.style.display = 'flex'; // o 'block'
-
-      // Actualizar UI inmediatamente
-      updateUI();
-
-      // Reiniciar animación principal del juego
-      if (typeof animate === 'function') {
-        animate();
-      } else {
-        console.error('La función animate no está definida globalmente o no es accesible.');
-      }
+      if (earthHealthContainerGlobal) earthHealthContainerGlobal.style.display = 'flex';
+      if (livesDisplayContainerGlobal) livesDisplayContainerGlobal.style.display = 'flex';
+      if (touchControlsContainer) { touchControlsContainer.style.display = 'flex'; } // Show touch controls
+      updateUI(); animate();
     }
 
-    function restartGame() { // Esta función ahora solo llama a la nueva función de inicialización
-      initializeOrResetGame();
-    }
-    // Ocultar pantalla de Game Over
-    if (gameOverDiv) gameOverDiv.style.display = "none";
-
-    // Resetear variables del juego
-    score = 0;
-    playerLives = 3; // Restablecer a la cantidad inicial de vidas.
-    earthHealth = MAX_EARTH_HEALTH; // Usar la constante definida
-
-    // Resetear estado del jugador
-    position.x = width / 2 - playerImgWidth / 2; // Posición inicial X (centrado)
-    position.y = height - playerImgHeight - 30;  // Posición inicial Y (cerca del fondo)
-    angle = 0; // Ángulo inicial (ej. apuntando hacia arriba o adelante)
-    speed = actualMinSpeed; // Restablecer a la velocidad mínima/inicial
-    rotationSpeed = 0; // Restablecer velocidad de rotación
-    playerDestroyed = false;
-
-    // Resetear estado de las teclas
-    keys.up = false;
-    keys.down = false;
-    keys.left = false;
-    keys.right = false;
-
-    // Resetear flags de sonido iniciales
-    firstShotFired = false;
-    atmosphericSoundHasStarted = false;
-    // Si el sonido atmosférico estaba en bucle, podrías necesitar pararlo aquí
-    // audioAtmosfera.pause();
-    // audioAtmosfera.currentTime = 0;
-
-    // Limpiar arrays de juego
-    bullets = [];
-    martians = [];
-    explosions = [];
-
-    // Recrear elementos iniciales
-    createMartianInitialWave();
-    // Si tienes estrellas u otros elementos que se generan una vez, considera si deben recrearse.
-    // createStars(); // Por ejemplo, si las estrellas deben cambiar o resetearse.
-
-    gameIsOver = false;
-
-    // Actualizar UI inmediatamente
-    updateUI();
-
-    // Reiniciar animación
-    if (typeof animate === 'function') {
-      animate();
-    } else {
-      console.error('La función animate no está definida globalmente o no es accesible.');
-    }
-
-
-    // Añadir event listener al botón de reinicio
-    if (restartBtn) {
-      restartBtn.addEventListener('click', restartGame);
-    }
-
-    // Función para crear la oleada inicial de marcianos (ejemplo)
-    function createMartianInitialWave() {
-      // Lógica para crear los marcianos iniciales, por ejemplo:
-      for (let i = 0; i < 10; i++) { // Crear 10 marcianos como ejemplo
-        setTimeout(createMartian, i * 500); // Espaciados en el tiempo
-      }
-    }
-
-    // Añadir event listener al botón de reinicio
-    if (restartBtn) {
-      restartBtn.addEventListener('click', restartGame);
-    }
-
-    // El juego ya no comienza automáticamente.
-    // Se iniciará con el botón de la pantalla de inicio.
-    // PERO, necesitamos dibujar las estrellas desde el principio.
-    createStars(); // Crear estrellas para el fondo inicial
+    function restartGame() { initializeOrResetGame(); }
+    if (restartBtn) restartBtn.addEventListener('click', restartGame);
+    function createMartianInitialWave() { for (let i = 0; i < 5; i++) { setTimeout(createMartian, i * (500 / (scaleFactor > 0 ? scaleFactor : 1))); } }
+    createStars();
 
     function initialBackgroundAnimation() {
-      if (!gameHasStarted) {
-        clearCanvas();
-        updateStars();
-        drawStars();
-        requestAnimationFrame(initialBackgroundAnimation);
-      } else {
-        // Una vez que el juego ha comenzado, la animación principal (animate()) toma el control.
-        // Esta función ya no necesita seguir ejecutándose.
-        return;
-      }
+      if (!gameHasStarted) { clearCanvas(); updateStars(); drawStars(); requestAnimationFrame(initialBackgroundAnimation); }
     }
 
-    // Event listener para el botón de INICIAR JUEGO
-    // Asegurarse que startGameBtn no es null antes de añadir el listener
-    // Event listener para el botón de INICIAR JUEGO
     if (startGameBtn) {
-      console.log('Adding event listener to startGameBtn'); // DEBUG
       startGameBtn.addEventListener('click', () => {
-        console.log('startGameBtn clicked!'); // DEBUG
-        playSound(audioPremio);
-        playSound(audioVoz);
-        if (startScreenDiv) {
-          console.log('Hiding startScreenDiv'); // DEBUG
-          startScreenDiv.style.display = 'none';
-        }
-        console.log('Calling initializeOrResetGame from startGameBtn'); // DEBUG
-        initializeOrResetGame();
+        playSound(audioPremio); playSound(audioVoz);
+        if (startScreenDiv) startScreenDiv.style.display = 'none';
+        initializeOrResetGame(); // This will also show touch controls
       });
-    }
-    else {
-      console.error('startGameBtn not found, cannot add event listener.'); // DEBUG
-    }
+    } else { console.error('startGameBtn not found, cannot add event listener.'); }
 
-    // Iniciar la animación de fondo DESPUÉS de definir todo, incluyendo los listeners
     initialBackgroundAnimation();
 
   </script>
