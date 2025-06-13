@@ -527,6 +527,10 @@
     const BASE_MARTIAN_BASE_SPEED_X = 1;
     const BASE_MARTIAN_BASE_SPEED_Y = 0.15;
     const BASE_BULLET_RADIUS = 3;
+    const BASE_GUN_WIDTH = 20; // Ancho base del cohete
+    const BASE_GUN_HEIGHT = 50; // Alto base del cohete
+    const GUN_SPEED = 7; // Velocidad del cohete
+    const BASE_GUN_AOE_RADIUS = 50; // Radio base del área de efecto en píxeles
     const BASE_EXPLOSION_MIN_SIZE = 2;
     const BASE_EXPLOSION_MAX_SIZE = 5;
     const BASE_EXPLOSION_MIN_SPEED = 1;
@@ -552,6 +556,9 @@
     let martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X;
     let martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y;
     let actualMinSpeed = BASE_MAX_SPEED * 0.10;
+    let gunWidth = BASE_GUN_WIDTH;
+    let gunHeight = BASE_GUN_HEIGHT;
+    let gunAoeRadius = BASE_GUN_AOE_RADIUS;
 
     // Variables para el sistema de oleadas de marcianos
     const NEXT_WAVE_INTERVAL = 10000; // 10 segundos en milisegundos
@@ -633,17 +640,26 @@
     let playerInvulnerableTimer = 0;
     let planetHasExploded = false;
 
+    // Variables de estado para el sistema del Cohete (Gun)
+    let activeGuns = [];
+    const MIN_MARTIANS_FOR_GUN_LAUNCH = 40;
+    const GUN_MIN_LAUNCH_INTERVAL = 5000; // 5 segundos
+    const GUN_MAX_LAUNCH_INTERVAL = 30000; // 30 segundos
+    let timeSinceLastGunLaunch = 0;
+    let nextGunLaunchCooldown = GUN_MIN_LAUNCH_INTERVAL + Math.random() * (GUN_MAX_LAUNCH_INTERVAL - GUN_MIN_LAUNCH_INTERVAL);
+
     // --- Image Loading ---
     const playerImage = new Image(); playerImage.onload = imageLoaded; playerImage.src = "nave.png";
     const invaderImage = new Image(); invaderImage.onload = imageLoaded; invaderImage.src = 'invader.png';
     const invaderRojoImage = new Image(); invaderRojoImage.onload = imageLoaded; invaderRojoImage.src = 'invader_rojo.png';
     const invaderStrongImage = new Image(); invaderStrongImage.onload = imageLoaded; invaderStrongImage.src = 'inveader_strong.png';
     const invaderStrong2Image = new Image(); invaderStrong2Image.onload = imageLoaded; invaderStrong2Image.src = 'invader_strong_2.png';
+    const gunImage = new Image(); gunImage.onload = imageLoaded; gunImage.src = 'gun.png';
     let planeta = { img: null, x: 0, y: 0, width: 0, height: 0, targetY: 0, speed: 0, loaded: false, reachedTarget: false, baseWidth: 0, baseHeight: 0 };
     const planetaImage = new Image(); planetaImage.onload = imageLoaded; planetaImage.src = "planeta.png";
     audioEarthBang.oncanplaythrough = imageLoaded; audioEarthBang.load();
     let imagesLoadedCount = 0;
-    const totalImagesToLoad = 7;
+    const totalImagesToLoad = 8; // Incrementado por gunImage
 
     function imageLoaded() {
       if (this === planetaImage) {
@@ -717,7 +733,15 @@
       bulletSpeed = BASE_BULLET_SPEED * scaleFactor;
       martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X * scaleFactor;
       martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y * scaleFactor;
-      bulletRadius = BASE_BULLET_RADIUS * scaleFactor;
+      if (width <= 768) {
+        bulletRadius = BASE_BULLET_RADIUS * scaleFactor * 3.2; // Más grande en móvil
+      } else {
+        bulletRadius = BASE_BULLET_RADIUS * scaleFactor;
+      }
+
+      gunWidth = BASE_GUN_WIDTH * scaleFactor;
+      gunHeight = BASE_GUN_HEIGHT * scaleFactor;
+      gunAoeRadius = BASE_GUN_AOE_RADIUS * scaleFactor;
 
       // Planet positioning and speed (depends on the final planeta.width and planeta.height)
       if (planeta.baseWidth && planeta.baseHeight) {
@@ -892,6 +916,96 @@
       explosions.forEach(p => {
         ctx.save(); ctx.globalAlpha = Math.max(0, p.alpha); ctx.fillStyle = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+      });
+    }
+
+    function createGun() {
+      if (!planeta.loaded || !planeta.reachedTarget) return null; // No lanzar si el planeta no está listo
+
+      const gun = {};
+      gun.x = planeta.x + (planeta.width / 2) - (gunWidth / 2); // Centro del planeta, ajustado por ancho del cohete
+      gun.y = planeta.y + (planeta.height / 2) - (gunHeight / 2); // Centro del planeta, ajustado por alto del cohete
+
+      // Dirección aleatoria hacia la mitad superior del canvas
+      const targetX = Math.random() * width;
+      const targetY = 0; // Apuntar al borde superior
+
+      const dx = targetX - gun.x;
+      const dy = targetY - gun.y;
+      const angle = Math.atan2(dy, dx);
+
+      gun.vx = Math.cos(angle) * GUN_SPEED * scaleFactor; // Aplicar scaleFactor a la velocidad
+      gun.vy = Math.sin(angle) * GUN_SPEED * scaleFactor;
+      
+      gun.width = gunWidth;
+      gun.height = gunHeight;
+      gun.img = gunImage;
+      gun.rotation = angle + Math.PI / 2; // Rotación para que la punta del cohete apunte en la dirección del movimiento
+
+      return gun;
+    }
+
+    function tryLaunchGun(deltaTime) {
+      if (gameIsOver || !gameHasStarted || isPaused) return;
+
+      timeSinceLastGunLaunch += deltaTime;
+
+      if (martians.length >= MIN_MARTIANS_FOR_GUN_LAUNCH && timeSinceLastGunLaunch >= nextGunLaunchCooldown) {
+        const newGun = createGun();
+        if (newGun) {
+          activeGuns.push(newGun);
+          // Aquí podrías añadir un sonido de lanzamiento de cohete
+          // playSound(audioGunLaunch); 
+        }
+        timeSinceLastGunLaunch = 0;
+        nextGunLaunchCooldown = GUN_MIN_LAUNCH_INTERVAL + Math.random() * (GUN_MAX_LAUNCH_INTERVAL - GUN_MIN_LAUNCH_INTERVAL);
+      }
+    }
+
+    function updateGuns() {
+      if (gameIsOver) return;
+
+      for (let i = activeGuns.length - 1; i >= 0; i--) {
+        const gun = activeGuns[i];
+        gun.x += gun.vx;
+        gun.y += gun.vy;
+
+        // Comprobar colisión AOE con marcianos
+        for (let j = martians.length - 1; j >= 0; j--) {
+          const martian = martians[j];
+          const dx = martian.x - gun.x; // Distancia del centro del marciano al centro del cohete
+          const dy = martian.y - gun.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < gunAoeRadius + (martian.mWidth / 2)) { // El radio del marciano es mWidth/2 aprox.
+            // Destruir marciano
+            createExplosion(martian.x, martian.y, "orange", 15, BASE_EXPLOSION_MIN_SIZE * 1.5, BASE_EXPLOSION_MAX_SIZE * 1.5); // Explosión más grande
+            martians.splice(j, 1);
+            score += 15; // Puntos extra por destrucción con cohete
+            // No eliminamos el cohete aquí, sigue su trayectoria y puede destruir más
+          }
+        }
+
+        // Eliminar cohete si sale de la pantalla
+        if (gun.x + gun.width < 0 || gun.x > width || gun.y + gun.height < 0 || gun.y > height) {
+          activeGuns.splice(i, 1);
+        }
+      }
+    }
+
+    function drawGuns() {
+      activeGuns.forEach(gun => {
+        ctx.save();
+        ctx.translate(gun.x + gun.width / 2, gun.y + gun.height / 2); // Trasladar al centro del cohete
+        ctx.rotate(gun.rotation); // Rotar
+        ctx.drawImage(gun.img, -gun.width / 2, -gun.height / 2, gun.width, gun.height); // Dibujar centrado
+        ctx.restore();
+
+        // Opcional: Dibujar el radio AOE para depuración
+        // ctx.beginPath();
+        // ctx.arc(gun.x, gun.y, gunAoeRadius, 0, Math.PI * 2);
+        // ctx.strokeStyle = 'rgba(255, 0, 0, 0.3)';
+        // ctx.stroke();
       });
     }
 
@@ -1108,6 +1222,7 @@
         }
         drawBullets();
         drawMartians();
+        drawGuns(); // Dibujar los cohetes
         drawExplosions(); // Always draw explosions
 
         // --- Game Logic (runs based on state) ---
@@ -1135,6 +1250,8 @@
               checkCollisionsWithMartians();
               checkBulletMartianCollisions();
               updatePlaneta();
+              tryLaunchGun(elapsed); // Intentar lanzar cohete, pasar 'elapsed' como deltaTime
+              updateGuns(); // Actualizar cohetes activos
 
               // Lógica de oleadas de marcianos
               timeSinceLastWave += elapsed; // elapsed es el deltaTime para la lógica del juego
@@ -1218,6 +1335,9 @@
       bullets = [];
       martians = [];
       explosions = [];
+      activeGuns = [];
+      timeSinceLastGunLaunch = 0;
+      nextGunLaunchCooldown = GUN_MIN_LAUNCH_INTERVAL + Math.random() * (GUN_MAX_LAUNCH_INTERVAL - GUN_MIN_LAUNCH_INTERVAL);
 
       // Reiniciar variables de oleadas
       timeSinceLastWave = 0;
