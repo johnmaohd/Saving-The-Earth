@@ -511,7 +511,6 @@
     const newTouchRightBtn = document.getElementById('newTouchRight');
     const newTouchShootBtn = document.getElementById('newTouchShoot');
 
-
     // --- Base Constants for Scaling ---
     const BASE_SCREEN_WIDTH = 1280;
     const BASE_PLAYER_IMG_WIDTH = 100;
@@ -537,7 +536,6 @@
     const BASE_EXPLOSION_MIN_LIFE = 20;
     const BASE_EXPLOSION_MAX_LIFE = 60;
 
-
     // --- Scaled Game Variables ---
     let scaleFactor = 1;
     let playerImgWidth = BASE_PLAYER_IMG_WIDTH;
@@ -554,6 +552,13 @@
     let martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X;
     let martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y;
     let actualMinSpeed = BASE_MAX_SPEED * 0.10;
+
+    // Variables para el sistema de oleadas de marcianos
+    const NEXT_WAVE_INTERVAL = 10000; // 10 segundos en milisegundos
+    let timeSinceLastWave = 0;
+    const INITIAL_MARTIANS_PER_WAVE = 2; // Número inicial de marcianos por oleada
+    let martiansInCurrentWave = INITIAL_MARTIANS_PER_WAVE;
+    const MARTIAN_WAVE_INCREMENT = 1; // Cuántos marcianos más por oleada
 
     // Función para cargar sonidos de manera segura
     function createSafeAudio(src) {
@@ -627,7 +632,6 @@
     let playerIsInvulnerable = false;
     let playerInvulnerableTimer = 0;
     let planetHasExploded = false;
-
 
     // --- Image Loading ---
     const playerImage = new Image(); playerImage.onload = imageLoaded; playerImage.src = "nave.png";
@@ -891,19 +895,31 @@
       });
     }
 
+    function spawnMartianWave() {
+      for (let i = 0; i < martiansInCurrentWave; i++) {
+        createMartian();
+      }
+    }
+
     function createMartian() {
-      const currentInvaderImgWidth = (Math.random() < 0.3 && score >= 400) ? invaderStrongImgWidth : invaderImgWidth;
-      const currentInvaderImgHeight = (Math.random() < 0.3 && score >= 400) ? invaderStrongImgHeight : invaderImgHeight;
+      const isStrongType = Math.random() < 0.3 && score >= 400;
+      const currentInvaderImg = isStrongType ? invaderStrongImage : invaderImage;
+      const currentInvaderImgWidth = isStrongType ? invaderStrongImgWidth : invaderImgWidth;
+      const currentInvaderImgHeight = isStrongType ? invaderStrongImgHeight : invaderImgHeight;
+
       const x = Math.random() * (width - currentInvaderImgWidth) + currentInvaderImgWidth / 2;
-      const y = currentInvaderImgHeight / 2;
+      const y = currentInvaderImgHeight / 2; // Start at the top
+
+      // Velocidad base constante para los marcianos
       const vx = (Math.random() - 0.5) * 2 * martianBaseSpeedX;
       const vy = martianBaseSpeedY;
-      let type = 'normal'; let health = 1; let martianImageToUse = invaderImage;
-      let martianAssignedWidth = invaderImgWidth; let martianAssignedHeight = invaderImgHeight;
-      if (score >= 400 && typeof invaderStrongImage !== 'undefined' && invaderStrongImage.complete && invaderStrongImage.naturalWidth !== 0) {
-        if (Math.random() < 0.3) { type = 'strong'; health = 5; martianImageToUse = invaderStrongImage; martianAssignedWidth = invaderStrongImgWidth; martianAssignedHeight = invaderStrongImgHeight; }
-      }
-      martians.push({ x, y, vx, vy, img: martianImageToUse, type: type, health: health, mWidth: martianAssignedWidth, mHeight: martianAssignedHeight, hasLanded: false });
+
+      const type = isStrongType ? 'strong' : 'normal';
+      const health = isStrongType ? 3 : 1;
+      const martianAssignedWidth = currentInvaderImgWidth;
+      const martianAssignedHeight = currentInvaderImgHeight;
+
+      martians.push({ x, y, vx, vy, img: currentInvaderImg, type: type, health: health, mWidth: martianAssignedWidth, mHeight: martianAssignedHeight, hasLanded: false });
     }
 
     function drawMartian(martian) {
@@ -1120,9 +1136,12 @@
               checkBulletMartianCollisions();
               updatePlaneta();
 
-              // Randomly spawn new martians
-              if (Math.random() < 0.02) { // Slightly increased spawn rate
-                createMartian();
+              // Lógica de oleadas de marcianos
+              timeSinceLastWave += elapsed; // elapsed es el deltaTime para la lógica del juego
+              if (timeSinceLastWave >= NEXT_WAVE_INTERVAL) {
+                martiansInCurrentWave += MARTIAN_WAVE_INCREMENT; // Aumentar el número de marcianos para la próxima oleada
+                spawnMartianWave();
+                timeSinceLastWave = 0; // Reiniciar el temporizador para la próxima oleada
               }
             }
           }
@@ -1200,10 +1219,14 @@
       martians = [];
       explosions = [];
 
+      // Reiniciar variables de oleadas
+      timeSinceLastWave = 0;
+      martiansInCurrentWave = INITIAL_MARTIANS_PER_WAVE;
+
       // Inicializar elementos del juego
       updateScaledValues();
       createStars();
-      createMartianInitialWave();
+      spawnMartianWave();
 
       // Restablecer estado del juego
       gameIsOver = false;
@@ -1242,17 +1265,6 @@
     // Configurar el botón de reinicio
     if (restartBtn) {
       restartBtn.addEventListener('click', restartGame);
-    }
-
-    // Función para crear una oleada inicial de marcianos
-    function createMartianInitialWave() {
-      for (let i = 0; i < 5; i++) {
-        setTimeout(() => {
-          if (!gameIsOver) {
-            createMartian();
-          }
-        }, i * (500 / (scaleFactor > 0 ? scaleFactor : 1)));
-      }
     }
 
     // Crear estrellas de fondo
