@@ -26,6 +26,12 @@
     #flightContainer {
       flex: 1;
       position: relative;
+      z-index: 1; /* Ensure it's behind touchControlsContainer */
+      pointer-events: none; /* Make container transparent to touch events */
+    }
+
+    #flightCanvas {
+      pointer-events: none; /* Allow touch events to pass through to controls below */
     }
 
     canvas {
@@ -35,7 +41,8 @@
       background: #000;
     }
 
-    button { /* General button styling, can be overridden */
+    button {
+      /* General button styling, can be overridden */
       padding: 0.5em 1em;
       font-size: 1em;
     }
@@ -138,7 +145,8 @@
       box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
       margin-top: 5%;
-      touch-action: manipulation; /* Improve touch responsiveness */
+      touch-action: manipulation;
+      /* Improve touch responsiveness */
     }
 
     #gameOver button:hover {
@@ -190,7 +198,8 @@
       letter-spacing: 1.5px;
       box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.2);
       transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-      touch-action: manipulation; /* Improve touch responsiveness */
+      touch-action: manipulation;
+      /* Improve touch responsiveness */
     }
 
     #startGameBtn:hover {
@@ -211,103 +220,213 @@
       display: none;
     }
 
-    /* Touch Controls CSS */
-    #touchControlsContainer {
-        position: absolute;
-        bottom: 20px;
-        left: 0; /* Occupy full width */
-        right: 0; /* Occupy full width */
-        transform: none; /* Override previous centering */
-        display: none; /* Initially hidden, shown by JS when game starts */
-        z-index: 2000;
-        opacity: 0.7;
-        user-select: none;
-        -webkit-user-select: none;
-        -ms-user-select: none;
-        display: flex; /* Use flex to arrange groups */
-        justify-content: space-between; /* Space out left and right groups */
-        align-items: center; /* Align items vertically */
-        padding: 0 20px; /* Add some padding on the sides */
-        box-sizing: border-box; /* Include padding in width calculation */
-    }
-
-    .touch-button {
-        background-color: rgba(100, 100, 100, 0.8);
-        color: white;
-        border: 2px solid rgba(200, 200, 200, 0.9);
-        border-radius: 10px;
-        font-weight: bold;
-        cursor: pointer;
-        display: inline-flex;
-        justify-content: center;
-        align-items: center;
-        touch-action: manipulation;
-    }
-
-    .touch-button span {
-        display: block;
-    }
-
-    .arrow-button {
-        width: 60px;
-        height: 60px;
-        font-size: 24px;
-        margin: 0 5px;
-    }
-
-    .shoot-button {
-        width: 100px;
-        height: 60px;
-        font-size: 18px;
-        margin: 0 20px;
-    }
-
-    #touchControlsLeft, #touchControlsRight {
-        display: flex;
-        align-items: center;
-    }
-
-    #touchLeft { order: 1; }
-    #touchUp { order: 2; margin-left: 10px !important; margin-right: 10px !important; }
-    #touchDown { order: 3; margin-right: 10px !important; }
-    #touchRight { order: 4; }
+    /* CSS for old touch controls removed */
 
 
     @media (max-width: 768px) {
-      #score { font-size: 2.5vw; top: 1.5%; right: 1.5%; }
-      #earthHealthContainer { font-size: 2.2vw; top: 1.5%; left: 1.5%; }
-      #earthHealthBarOuter { width: 25vw; height: 2.2vh; }
-      #livesDisplayContainer { font-size: 2.2vw; top: 6vh; left: 1.5%; }
-      #livesIcons img { width: 6vw; }
-      #gameOver { padding: 4vw; font-size: 5vw; }
-      #gameOver button { padding: 1em 1.8em; font-size: 2.5vw; margin-top: 4%; }
-      #startScreen img { margin-bottom: 1.5em; }
-      #startGameBtn { padding: 1.2em 2.5em; font-size: 3.5vw; }
+      #score {
+        font-size: 2.5vw;
+        top: 1.5%;
+        right: 1.5%;
+      }
 
-      /* Touch Controls - Tablet */
-      #touchControlsContainer { bottom: 15px; padding: 0 15px; }
-      .arrow-button { width: 55px; height: 55px; font-size: 22px; }
-      .shoot-button { width: 90px; height: 55px; font-size: 16px; }
+      #earthHealthContainer {
+        font-size: 2.2vw;
+        top: 1.5%;
+        left: 1.5%;
+      }
+
+      #earthHealthBarOuter {
+        width: 25vw;
+        height: 2.2vh;
+      }
+
+      #livesDisplayContainer {
+        font-size: 2.2vw;
+        top: 6vh;
+        left: 1.5%;
+      }
+
+      #livesIcons img {
+        width: 6vw;
+      }
+
+      #gameOver {
+        padding: 4vw;
+        font-size: 5vw;
+      }
+
+      #gameOver button {
+        padding: 1em 1.8em;
+        font-size: 2.5vw;
+        margin-top: 4%;
+      }
+
+      #startScreen img {
+        margin-bottom: 1.5em;
+      }
+
+      #startGameBtn {
+        padding: 1.2em 2.5em;
+        font-size: 3.5vw;
+      }
+
+      /* CSS for old touch controls (tablet) removed */
     }
 
     @media (max-width: 480px) {
-      #score { font-size: 3.5vw; top: 1%; right: 2%; }
-      #earthHealthContainer { font-size: 3vw; top: 1%; left: 2%; }
-      #earthHealthBarOuter { width: 30vw; height: 3vh; }
-      #livesDisplayContainer { font-size: 3vw; top: 6vh; left: 2%; }
-      #livesIcons img { width: 7vw; }
-      #gameOver { padding: 5vw; font-size: 6vw; }
-      #gameOver button { padding: 1.2em 2em; font-size: 4vw; margin-top: 6%; }
-      #startScreen { padding: 1em; }
-      #startScreen img { margin-bottom: 1em; max-width: 90%; }
-      #startGameBtn { padding: 1.5em 2.5em; font-size: 5vw; }
+      #score {
+        font-size: 3.5vw;
+        top: 1%;
+        right: 2%;
+      }
 
-      /* Touch Controls - Mobile */
-      #touchControlsContainer { bottom: 10px; padding: 0 10px; opacity: 0.8; }
-      .arrow-button { width: 50px; height: 50px; font-size: 20px; margin: 0 3px; }
-      #touchUp { margin-left: 5px !important; margin-right: 5px !important; }
-      #touchDown { margin-right: 5px !important; }
-      .shoot-button { width: 80px; height: 50px; font-size: 14px; margin: 0 10px; }
+      #earthHealthContainer {
+        font-size: 3vw;
+        top: 1%;
+        left: 2%;
+      }
+
+      #earthHealthBarOuter {
+        width: 30vw;
+        height: 3vh;
+      }
+
+      #livesDisplayContainer {
+        font-size: 3vw;
+        top: 6vh;
+        left: 2%;
+      }
+
+      #livesIcons img {
+        width: 7vw;
+      }
+
+      #gameOver {
+        padding: 5vw;
+        font-size: 6vw;
+      }
+
+      #gameOver button {
+        padding: 1.2em 2em;
+        font-size: 4vw;
+        margin-top: 6%;
+      }
+
+      #startScreen {
+        padding: 1em;
+      }
+
+      #startScreen img {
+        margin-bottom: 1em;
+        max-width: 90%;
+      }
+
+      #startGameBtn {
+        padding: 1.5em 2.5em;
+        font-size: 5vw;
+      }
+
+    }
+
+    /* New Touch Controls CSS */
+    #newTouchControls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 15px;
+      box-sizing: border-box;
+      display: none; /* Initially hidden, shown by JS */
+      justify-content: space-between;
+      align-items: flex-end; /* Align items to the bottom of the flex container */
+      z-index: 3000;
+      pointer-events: none; /* Container itself doesn't block, only buttons do */
+    }
+
+    #touchControlsLeftCluster,
+    #touchControlsRightCluster {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto; /* Clusters are interactive */
+    }
+
+    #touchControlsLeftCluster {
+      align-items: flex-start; /* Align direction pad to the left */
+    }
+
+    #touchControlsRightCluster {
+      align-items: flex-end; /* Align shoot button to the right */
+    }
+
+    .touch-lr-row {
+      display: flex;
+      justify-content: center;
+    }
+
+    .new-touch-btn {
+      background-color: rgba(85, 85, 85, 0.7);
+      color: white;
+      border: 2px solid rgba(120, 120, 120, 0.9);
+      border-radius: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+      -webkit-user-select: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      opacity: 0.8;
+    }
+
+    .new-touch-arrow {
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+      margin: 5px;
+    }
+
+    .new-touch-shoot {
+      width: 100px;
+      height: 70px;
+      font-size: 18px;
+      margin: 5px;
+      padding: 10px;
+    }
+
+    /* Adjustments for smaller screens */
+    @media (max-width: 768px) {
+      .new-touch-arrow {
+        width: 55px;
+        height: 55px;
+        font-size: 24px;
+      }
+      .new-touch-shoot {
+        width: 90px;
+        height: 65px;
+        font-size: 16px;
+      }
+      #newTouchControls {
+        padding: 10px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .new-touch-arrow {
+        width: 50px;
+        height: 50px;
+        font-size: 22px;
+      }
+      .new-touch-shoot {
+        width: 80px;
+        height: 60px;
+        font-size: 14px;
+      }
+      #newTouchControls {
+        padding: 5px;
+      }
     }
   </style>
 </head>
@@ -339,16 +458,20 @@
     <canvas id="flightCanvas"></canvas>
   </div>
 
-  <div id="touchControlsContainer">
-      <div id="touchControlsLeft">
-          <button id="touchLeft" class="touch-button arrow-button"><span>&#x2190;</span></button>
-          <button id="touchUp" class="touch-button arrow-button"><span>&#x2191;</span></button>
-          <button id="touchDown" class="touch-button arrow-button"><span>&#x2193;</span></button>
-          <button id="touchRight" class="touch-button arrow-button"><span>&#x2192;</span></button>
+  <!-- Touch controls HTML removed for recreation -->
+
+  <div id="newTouchControls">
+    <div id="touchControlsLeftCluster">
+      <button id="newTouchUp" class="new-touch-btn new-touch-arrow">▲</button>
+      <div class="touch-lr-row">
+        <button id="newTouchLeft" class="new-touch-btn new-touch-arrow">◀</button>
+        <button id="newTouchRight" class="new-touch-btn new-touch-arrow">▶</button>
       </div>
-      <div id="touchControlsRight">
-          <button id="touchShoot" class="touch-button shoot-button"><span>SHOOT</span></button>
-      </div>
+      <button id="newTouchDown" class="new-touch-btn new-touch-arrow">▼</button>
+    </div>
+    <div id="touchControlsRightCluster">
+      <button id="newTouchShoot" class="new-touch-btn new-touch-shoot">DISPARAR</button>
+    </div>
   </div>
 
   <script>
@@ -367,13 +490,13 @@
     const earthHealthContainerGlobal = document.getElementById('earthHealthContainer');
     const livesDisplayContainerGlobal = document.getElementById('livesDisplayContainer');
 
-    // Touch Control Elements
-    const touchControlsContainer = document.getElementById('touchControlsContainer');
-    const touchLeftBtn = document.getElementById('touchLeft');
-    const touchRightBtn = document.getElementById('touchRight');
-    const touchUpBtn = document.getElementById('touchUp');
-    const touchDownBtn = document.getElementById('touchDown');
-    const touchShootBtn = document.getElementById('touchShoot');
+    // New Touch Control Elements
+    const newTouchControlsContainer = document.getElementById('newTouchControls');
+    const newTouchLeftBtn = document.getElementById('newTouchLeft');
+    const newTouchUpBtn = document.getElementById('newTouchUp');
+    const newTouchDownBtn = document.getElementById('newTouchDown');
+    const newTouchRightBtn = document.getElementById('newTouchRight');
+    const newTouchShootBtn = document.getElementById('newTouchShoot');
 
 
     // --- Base Constants for Scaling ---
@@ -396,6 +519,8 @@
     const BASE_EXPLOSION_MAX_SIZE = 5;
     const BASE_EXPLOSION_MIN_SPEED = 1;
     const BASE_EXPLOSION_MAX_SPEED = 3;
+    const EARTH_EXPLOSION_MIN_SPEED = 3; // Adjusted for smaller, less resource-intensive planet explosion
+    const EARTH_EXPLOSION_MAX_SPEED = 8;  // Adjusted for smaller, less resource-intensive planet explosion
     const BASE_EXPLOSION_MIN_LIFE = 20;
     const BASE_EXPLOSION_MAX_LIFE = 60;
 
@@ -415,23 +540,47 @@
     let bulletSpeed = BASE_BULLET_SPEED;
     let martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X;
     let martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y;
-    let bulletRadius = BASE_BULLET_RADIUS;
     let actualMinSpeed = BASE_MAX_SPEED * 0.10;
 
+    // Función para cargar sonidos de manera segura
+    function createSafeAudio(src) {
+      try {
+        const audio = new Audio(src);
+        audio.load();
+        return audio;
+      } catch (e) {
+        console.warn(`No se pudo cargar el sonido: ${src}`, e);
+        return {
+          play: () => { },
+          pause: () => { },
+          currentTime: 0,
+          paused: true,
+          loop: false,
+          src: ''
+        };
+      }
+    }
 
     // --- Sound Loading ---
-    const audioLaser = new Audio('laser.wav');
-    const audioAtmosfera = new Audio('sonido_atmosferico.mp3');
-    const audioPlayerExplosion = new Audio('explosion-nave.mp3');
-    const audioInvaderDown = new Audio('invader_down.wav');
-    const audioEarthBang = new Audio('earth_bang.wav');
-    const audioPremio = new Audio('premio.mp3');
-    const audioVoz = new Audio('musica_espacial.mp3');
+    const audioLaser = createSafeAudio('laser.wav');
+    const audioExplosion = createSafeAudio('explosion-nave.mp3');
+    const audioPremio = createSafeAudio('premio.mp3');
+    const audioEarthBang = createSafeAudio('earth_bang.mp3');
+    const audioVoz = createSafeAudio('voz.mp3');
+    const audioPlayerExplosion = createSafeAudio('explosion-nave.mp3');
+    const audioMusica = createSafeAudio('voz.mp3');
+
+    const audioInvaderDown = createSafeAudio('invader_down.wav'); // Usamos el mismo sonido que para explosión
 
     function playSound(sound) {
       if (sound && typeof sound.play === 'function') {
         sound.currentTime = 0;
-        sound.play().catch(e => console.warn("Audio play failed for " + (sound.src || 'unknown sound') + ":", e));
+        sound.play().catch(e => {
+          // Don't log error if user hasn't interacted with the page yet
+          if (e.name !== 'NotAllowedError') {
+            console.warn("Audio play failed for " + (sound.src || 'unknown sound') + ":", e);
+          }
+        });
       }
     }
 
@@ -539,9 +688,9 @@
 
     // Keyboard and Touch Event Handling
     function handleTouch(event, keyName, isPressed) {
-        if (!gameHasStarted || gameIsOver || isPaused) return;
-        event.preventDefault();
-        if (keyName) { keys[keyName] = isPressed; }
+      if (!gameHasStarted || gameIsOver || isPaused) return;
+      event.preventDefault();
+      if (keyName) { keys[keyName] = isPressed; }
     }
 
     window.addEventListener('keydown', (event) => {
@@ -549,11 +698,11 @@
         isPaused = !isPaused;
         if (isPaused) {
           if (audioAtmosfera && !audioAtmosfera.paused) audioAtmosfera.pause();
-          if (touchControlsContainer) touchControlsContainer.style.display = 'none'; // Hide touch controls when paused
+          if (newTouchControlsContainer) newTouchControlsContainer.style.display = 'none'; // Hide new touch controls when paused
           playSound(audioPremio);
         } else {
           if (audioAtmosfera && audioAtmosfera.paused) playSound(audioAtmosfera);
-          if (touchControlsContainer) touchControlsContainer.style.display = 'flex'; // Show touch controls when unpaused
+          if (newTouchControlsContainer) newTouchControlsContainer.style.display = 'flex'; // Show new touch controls when unpaused
         }
       }
     });
@@ -572,43 +721,91 @@
       if (e.code === "ArrowRight") keys.right = false;
     });
 
-    if (touchLeftBtn) {
-        touchLeftBtn.addEventListener('touchstart', (e) => handleTouch(e, 'left', true), { passive: false });
-        touchLeftBtn.addEventListener('touchend', (e) => handleTouch(e, 'left', false), { passive: false });
-        touchLeftBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'left', false), { passive: false });
-    }
-    if (touchRightBtn) {
-        touchRightBtn.addEventListener('touchstart', (e) => handleTouch(e, 'right', true), { passive: false });
-        touchRightBtn.addEventListener('touchend', (e) => handleTouch(e, 'right', false), { passive: false });
-        touchRightBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'right', false), { passive: false });
-    }
-    if (touchUpBtn) {
-        touchUpBtn.addEventListener('touchstart', (e) => handleTouch(e, 'up', true), { passive: false });
-        touchUpBtn.addEventListener('touchend', (e) => handleTouch(e, 'up', false), { passive: false });
-        touchUpBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'up', false), { passive: false });
-    }
-    if (touchDownBtn) {
-        touchDownBtn.addEventListener('touchstart', (e) => handleTouch(e, 'down', true), { passive: false });
-        touchDownBtn.addEventListener('touchend', (e) => handleTouch(e, 'down', false), { passive: false });
-        touchDownBtn.addEventListener('touchcancel', (e) => handleTouch(e, 'down', false), { passive: false });
-    }
-    if (touchShootBtn) {
-        touchShootBtn.addEventListener('touchstart', (e) => {
-            if (!gameHasStarted || gameIsOver || isPaused) return;
-            e.preventDefault();
-            shoot();
-        }, { passive: false });
-    }
+    function setupNewTouchControls() {
+      if (!newTouchControlsContainer) {
+        console.error("New touch controls container not found!");
+        return;
+      }
+      newTouchControlsContainer.style.display = 'flex'; // Show the controls
 
+      const handleTouchStart = (e, key) => {
+        e.preventDefault();
+        if (!gameHasStarted || gameIsOver || isPaused) return;
+        if (key === 'shoot') {
+          shoot();
+        } else {
+          keys[key] = true;
+        }
+      };
+
+      const handleTouchEnd = (e, key) => {
+        e.preventDefault();
+        if (!gameHasStarted || gameIsOver || isPaused) return;
+        if (key !== 'shoot') {
+          keys[key] = false;
+        }
+      };
+
+      if (newTouchLeftBtn) {
+        newTouchLeftBtn.addEventListener('touchstart', e => handleTouchStart(e, 'left'), { passive: false });
+        newTouchLeftBtn.addEventListener('touchend', e => handleTouchEnd(e, 'left'), { passive: false });
+      }
+      if (newTouchUpBtn) {
+        newTouchUpBtn.addEventListener('touchstart', e => handleTouchStart(e, 'up'), { passive: false });
+        newTouchUpBtn.addEventListener('touchend', e => handleTouchEnd(e, 'up'), { passive: false });
+      }
+      if (newTouchDownBtn) {
+        newTouchDownBtn.addEventListener('touchstart', e => handleTouchStart(e, 'down'), { passive: false });
+        newTouchDownBtn.addEventListener('touchend', e => handleTouchEnd(e, 'down'), { passive: false });
+      }
+      if (newTouchRightBtn) {
+        newTouchRightBtn.addEventListener('touchstart', e => handleTouchStart(e, 'right'), { passive: false });
+        newTouchRightBtn.addEventListener('touchend', e => handleTouchEnd(e, 'right'), { passive: false });
+      }
+      if (newTouchShootBtn) {
+        newTouchShootBtn.addEventListener('touchstart', e => handleTouchStart(e, 'shoot'), { passive: false });
+        // No touchend for shoot, it's a press-and-fire action
+      }
+      
+      // Prevent scrolling on touch control area
+      newTouchControlsContainer.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+      console.log('New touch controls setup complete.');
+    }
 
     function shoot() {
-      if (playerDestroyed || isGameOver) return;
-      if (!firstShotFired) {
-        if (!atmosphericSoundHasStarted && audioAtmosfera.paused) { playSound(audioAtmosfera); atmosphericSoundHasStarted = true; }
-        firstShotFired = true;
+      try {
+        if (gameIsOver || playerDestroyed) return;
+
+        // Reproducir sonido de disparo
+        playSound(audioLaser);
+
+        // Crear nueva bala
+        const newBullet = {
+          x: position.x,
+          y: position.y,
+          vx: Math.cos(angle) * bulletSpeed,
+          vy: -Math.sin(angle) * bulletSpeed,
+          life: 100
+        };
+
+        // Asegurarse de que bullets existe
+        if (!Array.isArray(bullets)) {
+          bullets = [];
+        }
+
+        bullets.push(newBullet);
+
+        // Iniciar sonido atmosférico en el primer disparo
+        if (!firstShotFired) {
+          // if (!atmosphericSoundHasStarted && audioAtmosfera && audioAtmosfera.paused) { // Temporarily commented out due to audioAtmosfera not defined
+          //   playSound(audioAtmosfera);
+          //   atmosphericSoundHasStarted = true;
+          // }
+          firstShotFired = true;
+        }
+      } catch (error) {
+        console.error('Error en la función shoot:', error);
       }
-      playSound(audioLaser);
-      bullets.push({ x: position.x, y: position.y, vx: Math.cos(angle) * bulletSpeed, vy: -Math.sin(angle) * bulletSpeed, life: 100 });
     }
 
     function createExplosion(x, y, color, count, minSizeParam, maxSizeParam, minLifeParam, maxLifeParam, minSpeedParam, maxSpeedParam) {
@@ -666,6 +863,15 @@
 
     function updatePlayer() {
       if (playerDestroyed) return;
+
+      // Handle invulnerability timer
+      if (playerIsInvulnerable) {
+        playerInvulnerableTimer--;
+        if (playerInvulnerableTimer <= 0) {
+          playerIsInvulnerable = false;
+        }
+      }
+
       if (keys.left) rotationSpeed += rotationAcceleration; if (keys.right) rotationSpeed -= rotationAcceleration;
       rotationSpeed = Math.max(-maxRotationSpeed, Math.min(maxRotationSpeed, rotationSpeed)); rotationSpeed *= rotationDamping; angle += rotationSpeed;
       if (keys.up) speed += accelerationFactor; else if (keys.down) speed -= accelerationFactor / 2; else speed -= accelerationFactor / 4;
@@ -706,18 +912,45 @@
     }
 
     function checkCollisionsWithMartians() {
-      if (playerDestroyed || isGameOver) return;
+      if (playerIsInvulnerable || playerDestroyed) return;
+
       for (let i = martians.length - 1; i >= 0; i--) {
-        const m = martians[i]; const dx = m.x - position.x; const dy = m.y - position.y; const distance = Math.sqrt(dx * dx + dy * dy);
+        const m = martians[i];
+        const distance = Math.hypot(position.x - m.x, position.y - m.y);
+
         if (distance < (playerImgWidth / 2 + m.mWidth / 2) * 0.8) {
-          playSound(audioPlayerExplosion);
-          createExplosion(position.x, position.y, "red", 60, BASE_EXPLOSION_MIN_SIZE * 1.2, BASE_EXPLOSION_MAX_SIZE * 1.2, BASE_EXPLOSION_MIN_LIFE, BASE_EXPLOSION_MAX_LIFE, BASE_EXPLOSION_MIN_SPEED * 1.2, BASE_EXPLOSION_MAX_SPEED * 1.2);
-          createExplosion(m.x, m.y, "orange", 40); martians.splice(i, 1); playerLives--; updateUI();
-          if (playerLives > 0) { position.x = width / 2; position.y = height - playerImgHeight / 2 - (10 * scaleFactor); playerIsInvulnerable = true; playerInvulnerableTimer = playerInvulnerabilityDuration; }
-          else { playerDestroyed = true; scheduleGameOverScreen(); }
-          break;
+          handlePlayerDeath();
+          // Martian is also destroyed in the collision
+          playSound(audioExplosion);
+          createExplosion(m.x + m.mWidth / 2, m.y + m.mHeight / 2, 'yellow', 20);
+          martians.splice(i, 1);
+          break; // Exit loop after one collision
         }
       }
+    }
+
+    function handlePlayerDeath() {
+      if (playerDestroyed) return; // Prevent multiple triggers
+
+      playerDestroyed = true;
+      playerLives--;
+      playSound(audioPlayerExplosion);
+      createExplosion(position.x, position.y, "red", 60, BASE_EXPLOSION_MIN_SIZE * 1.2, BASE_EXPLOSION_MAX_SIZE * 1.2);
+      updateUI();
+
+      if (playerLives > 0) {
+        setTimeout(respawnPlayer, 2000); // Respawn after 2 seconds
+      } else {
+        scheduleGameOverScreen();
+      }
+    }
+
+    function respawnPlayer() {
+      playerDestroyed = false;
+      position.x = width / 2;
+      position.y = height - playerImgHeight - (30 * scaleFactor);
+      playerIsInvulnerable = true;
+      playerInvulnerableTimer = 180; // 3 seconds of invulnerability
     }
 
     function updateMartians() {
@@ -740,10 +973,26 @@
             }
           } else if (martian.y > height + martian.mHeight) { martians.splice(index, 1); }
         } else {
+          // Martian has landed, make it jitter and damage the Earth
           const JITTER_RANGE = 20 * scaleFactor; const JITTER_TARGET_UPDATE_INTERVAL = 120; const JITTER_DRIFT_SPEED = 0.02;
           martian.jitterChangeTimer++;
           if (martian.jitterChangeTimer >= JITTER_TARGET_UPDATE_INTERVAL) { martian.jitterTargetX = martian.originalLandedX + (Math.random() - 0.5) * JITTER_RANGE; martian.jitterTargetY = martian.originalLandedY + (Math.random() - 0.5) * JITTER_RANGE; martian.jitterChangeTimer = 0; }
           martian.x += (martian.jitterTargetX - martian.x) * JITTER_DRIFT_SPEED; martian.y += (martian.jitterTargetY - martian.y) * JITTER_DRIFT_SPEED;
+
+          // Apply damage to Earth
+          if (!gameIsOver) {
+            const damage = martian.type === 'strong' ? 0.25 : 0.1;
+            earthCurrentHealth -= damage;
+            
+            if (earthCurrentHealth <= 0 && !planetHasExploded) {
+              earthCurrentHealth = 0;
+              planetHasExploded = true; // Ensure this is set to prevent re-triggering
+              // New, smaller, and different explosion for the planet
+              createExplosion(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, "yellow", 20, 3, 10, 20, 40, EARTH_EXPLOSION_MIN_SPEED, EARTH_EXPLOSION_MAX_SPEED);
+              playSound(audioEarthBang);
+              scheduleGameOverScreen();
+            }
+          }
         }
       });
     }
@@ -757,37 +1006,94 @@
           if (distance < m.mWidth / 2 + bulletRadius) {
             m.health -= 1; bullets.splice(i, 1);
             if (m.health <= 0) { playSound(audioInvaderDown); createExplosion(m.x, m.y, "yellow", 30); martians.splice(j, 1); score += (m.type === 'strong' ? 25 : 10); }
-            else { if (m.type === 'strong') { const initialHealth = 5; const hitsTaken = initialHealth - m.health; const baseHitParticleCount = 8; const scaledParticleCount = baseHitParticleCount + (hitsTaken * 4); createExplosion(bullet.x, m.y, 'orangered', scaledParticleCount, BASE_EXPLOSION_MIN_SIZE, BASE_EXPLOSION_MAX_SIZE + (hitsTaken * 0.75), BASE_EXPLOSION_MIN_LIFE, BASE_EXPLOSION_MAX_LIFE + (hitsTaken * 5), BASE_EXPLOSION_MIN_SPEED, BASE_EXPLOSION_MAX_SPEED ); } }
+            else { if (m.type === 'strong') { const initialHealth = 5; const hitsTaken = initialHealth - m.health; const baseHitParticleCount = 8; const scaledParticleCount = baseHitParticleCount + (hitsTaken * 4); createExplosion(bullet.x, m.y, 'orangered', scaledParticleCount, BASE_EXPLOSION_MIN_SIZE, BASE_EXPLOSION_MAX_SIZE + (hitsTaken * 0.75), BASE_EXPLOSION_MIN_LIFE, BASE_EXPLOSION_MAX_LIFE + (hitsTaken * 5), BASE_EXPLOSION_MIN_SPEED, BASE_EXPLOSION_MAX_SPEED); } }
             break;
           }
         }
       }
     }
 
-    function animate() {
-      if (!gameHasStarted && !isPaused) { requestAnimationFrame(initialBackgroundAnimation); return; }
-      if (!gameHasStarted && isPaused) { requestAnimationFrame(animate); return; }
-      if (isPaused) {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'; ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = 'white'; ctx.font = `${48 * scaleFactor}px Arial`; ctx.textAlign = 'center';
-        ctx.fillText('Juego Pausado', width / 2, height / 2);
-        requestAnimationFrame(animate); return;
-      }
-      if (gameIsOver) return;
-      requestAnimationFrame(animate); clearCanvas(); updateStars(); drawStars(); updatePlaneta(); drawPlaneta();
-      if (playerIsInvulnerable) { playerInvulnerableTimer--; if (playerInvulnerableTimer <= 0) playerIsInvulnerable = false; }
-      if (!playerDestroyed) { updatePlayer(); drawPlayer(); }
-      updateBullets(); drawBullets(); updateMartians(); drawMartians(); updateExplosions(); drawExplosions();
-      if (!gameIsOver && !playerDestroyed) {
-        let landedMartiansOnPlanet = 0; martians.forEach(m => { if (m.hasLanded) landedMartiansOnPlanet++; });
-        earthCurrentHealth -= landedMartiansOnPlanet * damagePerLandedMartianPerFrame; earthCurrentHealth = Math.max(0, earthCurrentHealth);
-        if (earthCurrentHealth <= 0) {
-          if (!planetHasExploded) { planetHasExploded = true; createExplosion(planeta.x + planeta.width / 2, planeta.y + planeta.height / 2, 'white', 500, BASE_EXPLOSION_MIN_SIZE * 2.5, BASE_EXPLOSION_MAX_SIZE * 6, BASE_EXPLOSION_MIN_LIFE * 1.3, BASE_EXPLOSION_MAX_LIFE * 1.3, BASE_EXPLOSION_MIN_SPEED * 1, BASE_EXPLOSION_MAX_SPEED * 1.5); playSound(audioEarthBang); }
-          playerDestroyed = true; scheduleGameOverScreen();
+    let lastTime = 0;
+    let lastFrameTime = 0;
+    let frameCount = 0; // Define frameCount
+    const frameRate = 60;
+    const frameInterval = 1000 / frameRate;
+
+    function animate(currentTime) {
+      frameCount++; // Increment frameCount
+      // Always request the next frame first.
+      animationFrameId = requestAnimationFrame(animate);
+
+      try {
+        const now = performance.now();
+        const elapsed = now - lastFrameTime;
+
+        // --- Drawing Logic (runs every frame for smoothness) ---
+        clearCanvas();
+        updateStars(); // Keep background moving
+        drawStars();
+        drawPlaneta();
+        if (!playerDestroyed) {
+          drawPlayer();
+        }
+        drawBullets();
+        drawMartians();
+        drawExplosions(); // Always draw explosions
+
+        // --- Game Logic (runs based on state) ---
+        if (gameHasStarted && !isPaused) {
+          // Debug logs for touch controls - check every few frames
+          if (frameCount % 120 === 0) { // Log every 2 seconds (approx)
+            console.log('In animate - startScreen display:', startScreenDiv ? getComputedStyle(startScreenDiv).display : 'startScreenDiv not found');
+            console.log('In animate - newTouchControlsContainer display:', newTouchControlsContainer ? getComputedStyle(newTouchControlsContainer).display : 'newTouchControlsContainer not found');
+            console.log('In animate - newTouchControlsContainer z-index:', newTouchControlsContainer ? getComputedStyle(newTouchControlsContainer).zIndex : 'newTouchControlsContainer not found');
+            console.log('In animate - flightContainer z-index:', flightContainer ? getComputedStyle(flightContainer).zIndex : 'flightContainer not found');
+            console.log('In animate - gameOverDiv display:', gameOverDiv ? getComputedStyle(gameOverDiv).display : 'gameOverDiv not found');
+          }
+
+          // Explosions must be updated every frame for smooth animation
+          updateExplosions();
+
+          // Run physics and game rules at a fixed interval (for consistency)
+          if (elapsed > frameInterval) {
+            lastFrameTime = now - (elapsed % frameInterval);
+
+            if (!gameIsOver) {
+              updatePlayer();
+              updateBullets();
+              updateMartians();
+              checkCollisionsWithMartians();
+              checkBulletMartianCollisions();
+              updatePlaneta();
+
+              // Randomly spawn new martians
+              if (Math.random() < 0.02) { // Slightly increased spawn rate
+                createMartian();
+              }
+            }
+          }
+        }
+
+        // --- UI and Overlay Logic ---
+        if (isPaused) {
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+          ctx.fillRect(0, 0, width, height);
+          ctx.fillStyle = 'white';
+          ctx.font = `${48 * scaleFactor}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.fillText('Juego Pausado', width / 2, height / 2);
+        }
+
+        // Always update the UI display (score, health, etc.)
+        updateUI();
+
+      } catch (error) {
+        console.error("Error in animate function:", error);
+        // Stop the game loop if an error occurs
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
         }
       }
-      if (!playerDestroyed) { checkCollisionsWithMartians(); checkBulletMartianCollisions(); }
-      updateUI(); if (Math.random() < 0.01) createMartian();
     }
 
     function updateUI() {
@@ -800,9 +1106,9 @@
     }
 
     function scheduleGameOverScreen() {
-      if (gameIsOver || !playerDestroyed) return;
+      if (gameIsOver) return;
       if (gameOverDiv && gameOverMessage && restartBtn) { gameOverMessage.style.display = "block"; restartBtn.style.display = "none"; gameOverDiv.style.display = "flex"; }
-      if (touchControlsContainer) { touchControlsContainer.style.display = 'none'; } // Hide touch controls
+      if (newTouchControlsContainer) { newTouchControlsContainer.style.display = 'none'; } // Hide new touch controls
       setTimeout(() => {
         if (gameOverMessage) gameOverMessage.style.display = "none";
         if (restartBtn) restartBtn.style.display = "block";
@@ -812,36 +1118,114 @@
 
     function initializeOrResetGame() {
       if (gameOverDiv) gameOverDiv.style.display = "none";
-      score = 0; playerLives = 3; earthHealth = MAX_EARTH_HEALTH; earthCurrentHealth = MAX_EARTH_HEALTH; planetHasExploded = false;
-      position.x = width / 2; position.y = height - playerImgHeight - (30 * scaleFactor); angle = 0; speed = actualMinSpeed; rotationSpeed = 0;
-      playerDestroyed = false; playerIsInvulnerable = false; playerInvulnerableTimer = 0;
-      keys.up = false; keys.down = false; keys.left = false; keys.right = false;
-      firstShotFired = false; atmosphericSoundHasStarted = false;
-      if (audioAtmosfera && typeof audioAtmosfera.pause === 'function') { audioAtmosfera.pause(); audioAtmosfera.currentTime = 0; }
-      bullets = []; martians = []; explosions = [];
-      updateScaledValues(); createStars(); createMartianInitialWave();
-      gameIsOver = false; gameHasStarted = true;
+      score = 0;
+      playerLives = 3;
+      earthHealth = MAX_EARTH_HEALTH;
+      earthCurrentHealth = MAX_EARTH_HEALTH;
+      planetHasExploded = false;
+      position.x = width / 2;
+      position.y = height - playerImgHeight - (30 * scaleFactor);
+      angle = 0;
+      speed = actualMinSpeed;
+      rotationSpeed = 0;
+      playerDestroyed = false;
+      playerIsInvulnerable = false;
+      playerInvulnerableTimer = 0;
+      keys.up = false;
+      keys.down = false;
+      keys.left = false;
+      keys.right = false;
+      firstShotFired = false;
+      atmosphericSoundHasStarted = false;
+      if (audioMusica && typeof audioMusica.pause === 'function') {
+        audioMusica.pause();
+        audioMusica.currentTime = 0;
+      }
+      // Limpiar arrays del juego
+      bullets = [];
+      martians = [];
+      explosions = [];
+
+      // Inicializar elementos del juego
+      updateScaledValues();
+      createStars();
+      createMartianInitialWave();
+
+      // Restablecer estado del juego
+      gameIsOver = false;
+      gameHasStarted = true;
+
+      // Mostrar elementos de la UI
       if (scoreDisplayGlobal) scoreDisplayGlobal.style.display = 'block';
       if (earthHealthContainerGlobal) earthHealthContainerGlobal.style.display = 'flex';
       if (livesDisplayContainerGlobal) livesDisplayContainerGlobal.style.display = 'flex';
-      if (touchControlsContainer) { touchControlsContainer.style.display = 'flex'; } // Show touch controls
-      updateUI(); animate();
+      if (newTouchControlsContainer) {
+        newTouchControlsContainer.style.display = 'flex'; // Ensure new touch controls are visible
+      }
+
+      updateUI();
+
+      // Iniciar el bucle de animación si no está ya en ejecución
+      if (!animationFrameId) {
+        const now = performance.now();
+        lastTime = now;
+        lastFrameTime = now; 
+        animationFrameId = requestAnimationFrame(animate);
+      }
     }
 
-    function restartGame() { initializeOrResetGame(); }
-    if (restartBtn) restartBtn.addEventListener('click', restartGame);
-    function createMartianInitialWave() { for (let i = 0; i < 5; i++) { setTimeout(createMartian, i * (500 / (scaleFactor > 0 ? scaleFactor : 1))); } }
+    // Función para reiniciar el juego
+    function restartGame() {
+      // Cancelar el bucle de animación actual si existe
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+      // Reiniciar el juego
+      initializeOrResetGame();
+    }
+
+    // Configurar el botón de reinicio
+    if (restartBtn) {
+      restartBtn.addEventListener('click', restartGame);
+    }
+
+    // Función para crear una oleada inicial de marcianos
+    function createMartianInitialWave() {
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          if (!gameIsOver) {
+            createMartian();
+          }
+        }, i * (500 / (scaleFactor > 0 ? scaleFactor : 1)));
+      }
+    }
+
+    // Crear estrellas de fondo
     createStars();
 
+    // Función para la animación de fondo inicial
     function initialBackgroundAnimation() {
-      if (!gameHasStarted) { clearCanvas(); updateStars(); drawStars(); requestAnimationFrame(initialBackgroundAnimation); }
+      if (!gameHasStarted) {
+        clearCanvas();
+        updateStars();
+        drawStars();
+        requestAnimationFrame(initialBackgroundAnimation);
+      }
     }
 
     if (startGameBtn) {
       startGameBtn.addEventListener('click', () => {
-        playSound(audioPremio); playSound(audioVoz);
-        if (startScreenDiv) startScreenDiv.style.display = 'none';
-        initializeOrResetGame(); // This will also show touch controls
+        playSound(audioPremio);
+        playSound(audioVoz);
+        playSound(audioMusica);
+        audioMusica.loop = true; // Set the music to loop
+        if (startScreenDiv) {
+          startScreenDiv.style.display = 'none';
+        }
+        initializeOrResetGame();
+        setupNewTouchControls(); // Initialize new touch controls
+        animate(0);
       });
     } else { console.error('startGameBtn not found, cannot add event listener.'); }
 
