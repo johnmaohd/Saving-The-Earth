@@ -26,12 +26,15 @@
     #flightContainer {
       flex: 1;
       position: relative;
-      z-index: 1; /* Ensure it's behind touchControlsContainer */
-      pointer-events: none; /* Make container transparent to touch events */
+      z-index: 1;
+      /* Ensure it's behind touchControlsContainer */
+      pointer-events: none;
+      /* Make container transparent to touch events */
     }
 
     #flightCanvas {
-      pointer-events: none; /* Allow touch events to pass through to controls below */
+      pointer-events: none;
+      /* Allow touch events to pass through to controls below */
     }
 
     canvas {
@@ -337,11 +340,14 @@
       width: 100%;
       padding: 15px;
       box-sizing: border-box;
-      display: none; /* Initially hidden, shown by JS */
+      display: none;
+      /* Initially hidden, shown by JS */
       justify-content: space-between;
-      align-items: flex-end; /* Align items to the bottom of the flex container */
+      align-items: flex-end;
+      /* Align items to the bottom of the flex container */
       z-index: 3000;
-      pointer-events: none; /* Container itself doesn't block, only buttons do */
+      pointer-events: none;
+      /* Container itself doesn't block, only buttons do */
     }
 
     #touchControlsLeftCluster,
@@ -349,15 +355,18 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      pointer-events: auto; /* Clusters are interactive */
+      pointer-events: auto;
+      /* Clusters are interactive */
     }
 
     #touchControlsLeftCluster {
-      align-items: flex-start; /* Align direction pad to the left */
+      align-items: flex-start;
+      /* Align direction pad to the left */
     }
 
     #touchControlsRightCluster {
-      align-items: flex-end; /* Align shoot button to the right */
+      align-items: flex-end;
+      /* Align shoot button to the right */
     }
 
     .touch-lr-row {
@@ -403,11 +412,13 @@
         height: 55px;
         font-size: 24px;
       }
+
       .new-touch-shoot {
         width: 90px;
         height: 65px;
         font-size: 16px;
       }
+
       #newTouchControls {
         padding: 10px;
       }
@@ -419,11 +430,13 @@
         height: 50px;
         font-size: 22px;
       }
+
       .new-touch-shoot {
         width: 80px;
         height: 60px;
         font-size: 14px;
       }
+
       #newTouchControls {
         padding: 5px;
       }
@@ -628,9 +641,27 @@
     let imagesLoadedCount = 0;
     const totalImagesToLoad = 7;
 
+    function imageLoaded() {
+      if (this === planetaImage) {
+        planeta.img = this; planeta.loaded = true;
+        planeta.baseWidth = this.naturalWidth; planeta.baseHeight = this.naturalHeight;
+        updateScaledValues(); // Crucial to call this after planet dimensions are known
+      } else if (this === invaderStrong2Image) {
+        // This console.log can be useful for debugging specific image loads
+        console.log("imageLoaded: Strong Invader Type 2 (invader_strong_2) W (base):", this.naturalWidth, "H (base):", this.naturalHeight);
+      }
+      imagesLoadedCount++;
+      if (imagesLoadedCount === totalImagesToLoad) {
+        // All assets loaded, proceed to start game elements
+        createStars();
+        animate();
+      }
+    }
 
     function updateScaledValues() {
       scaleFactor = width / BASE_SCREEN_WIDTH;
+
+      // Initial scaling for player and invaders
       playerImgWidth = BASE_PLAYER_IMG_WIDTH * scaleFactor;
       playerImgHeight = BASE_PLAYER_IMG_HEIGHT * scaleFactor;
       invaderImgWidth = BASE_INVADER_IMG_WIDTH * scaleFactor;
@@ -639,6 +670,42 @@
       invaderStrongImgHeight = BASE_INVADER_STRONG_IMG_HEIGHT * scaleFactor;
       invaderStrong2ImgWidth = BASE_INVADER_STRONG_2_IMG_WIDTH * scaleFactor;
       invaderStrong2ImgHeight = BASE_INVADER_STRONG_2_IMG_HEIGHT * scaleFactor;
+
+      // Initial scaling for planet
+      if (planeta.baseWidth && planeta.baseHeight) {
+        planeta.width = planeta.baseWidth * scaleFactor;
+        planeta.height = planeta.baseHeight * scaleFactor;
+      }
+
+      // Mobile-specific size increase
+      if (width <= 768) {
+        // Player and Martians: current mobile size * 1.6 (initial desktop * scaleFactor * 2 * 1.6 = initial desktop * scaleFactor * 3.2)
+        playerImgWidth = BASE_PLAYER_IMG_WIDTH * scaleFactor * 3.2;
+        playerImgHeight = BASE_PLAYER_IMG_HEIGHT * scaleFactor * 3.2;
+        invaderImgWidth = BASE_INVADER_IMG_WIDTH * scaleFactor * 3.2;
+        invaderImgHeight = BASE_INVADER_IMG_HEIGHT * scaleFactor * 3.2;
+        invaderStrongImgWidth = BASE_INVADER_STRONG_IMG_WIDTH * scaleFactor * 3.2;
+        invaderStrongImgHeight = BASE_INVADER_STRONG_IMG_HEIGHT * scaleFactor * 3.2;
+        invaderStrong2ImgWidth = BASE_INVADER_STRONG_2_IMG_WIDTH * scaleFactor * 3.2;
+        invaderStrong2ImgHeight = BASE_INVADER_STRONG_2_IMG_HEIGHT * scaleFactor * 3.2;
+
+        // Planet: remains doubled on mobile (initial desktop * scaleFactor * 2)
+        if (planeta.baseWidth && planeta.baseHeight) {
+          planeta.width = planeta.baseWidth * scaleFactor * 2;
+          planeta.height = planeta.baseHeight * scaleFactor * 2;
+        }
+      } else {
+        // For non-mobile, ensure planet uses the standard scaleFactor if not already set by the mobile block
+        // This else block handles the case where sizes are determined outside the mobile check
+        // and ensures planet is scaled normally if not on mobile.
+        // Player and invader sizes are already set correctly by initial scaling above.
+        if (planeta.baseWidth && planeta.baseHeight) {
+          planeta.width = planeta.baseWidth * scaleFactor;
+          planeta.height = planeta.baseHeight * scaleFactor;
+        }
+      }
+
+      // Other scaled values
       maxSpeed = BASE_MAX_SPEED * scaleFactor;
       actualMinSpeed = maxSpeed * 0.10;
       if (speed === 0 && !gameHasStarted) { speed = actualMinSpeed; }
@@ -647,9 +714,9 @@
       martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X * scaleFactor;
       martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y * scaleFactor;
       bulletRadius = BASE_BULLET_RADIUS * scaleFactor;
+
+      // Planet positioning and speed (depends on the final planeta.width and planeta.height)
       if (planeta.baseWidth && planeta.baseHeight) {
-        planeta.width = planeta.baseWidth * scaleFactor;
-        planeta.height = planeta.baseHeight * scaleFactor;
         planeta.x = (width - planeta.width) / 2;
         const newTargetY = height - (planeta.height / 2);
         if (planeta.reachedTarget) { planeta.y = newTargetY; }
@@ -657,21 +724,8 @@
         if (planeta.height > 0) { planeta.speed = (planeta.height / 2) / (60 * 60) * scaleFactor; }
         else { planeta.speed = 0.1 * scaleFactor; }
       }
-      if (!gameHasStarted) { position.x = width / 2; position.y = height / 2; }
-    }
 
-    function imageLoaded() {
-      if (this === planetaImage) {
-        planeta.img = this; planeta.loaded = true;
-        planeta.baseWidth = this.naturalWidth; planeta.baseHeight = this.naturalHeight;
-        updateScaledValues();
-      } else if (this === invaderStrong2Image) {
-        console.log("imageLoaded: Landed Strong Invader (invader_strong_2) W (base):", this.naturalWidth, "H (base):", this.naturalHeight);
-      }
-      imagesLoadedCount++;
-      if (imagesLoadedCount === totalImagesToLoad) {
-        createStars(); animate();
-      }
+      if (!gameHasStarted) { position.x = width / 2; position.y = height / 2; }
     }
 
     let width = canvas.width = window.innerWidth;
@@ -766,7 +820,7 @@
         newTouchShootBtn.addEventListener('touchstart', e => handleTouchStart(e, 'shoot'), { passive: false });
         // No touchend for shoot, it's a press-and-fire action
       }
-      
+
       // Prevent scrolling on touch control area
       newTouchControlsContainer.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
       console.log('New touch controls setup complete.');
@@ -983,7 +1037,7 @@
           if (!gameIsOver) {
             const damage = martian.type === 'strong' ? 0.25 : 0.1;
             earthCurrentHealth -= damage;
-            
+
             if (earthCurrentHealth <= 0 && !planetHasExploded) {
               earthCurrentHealth = 0;
               planetHasExploded = true; // Ensure this is set to prevent re-triggering
@@ -1169,7 +1223,7 @@
       if (!animationFrameId) {
         const now = performance.now();
         lastTime = now;
-        lastFrameTime = now; 
+        lastFrameTime = now;
         animationFrameId = requestAnimationFrame(animate);
       }
     }
