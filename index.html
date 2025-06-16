@@ -524,8 +524,8 @@
     const BASE_MAX_SPEED = 8;
     const BASE_ACCELERATION_FACTOR = 0.03;
     const BASE_BULLET_SPEED = 12;
-    const BASE_MARTIAN_BASE_SPEED_X = 1;
-    const BASE_MARTIAN_BASE_SPEED_Y = 0.15;
+    const BASE_MARTIAN_BASE_SPEED_X = 0.4; // Velocidad horizontal base de los marcianos
+    const BASE_MARTIAN_BASE_SPEED_Y = 0.3;
     const BASE_BULLET_RADIUS = 3;
     const BASE_GUN_WIDTH = 20; // Ancho base del cohete
     const BASE_GUN_HEIGHT = 50; // Alto base del cohete
@@ -936,7 +936,7 @@
 
       gun.vx = Math.cos(angle) * GUN_SPEED * scaleFactor; // Aplicar scaleFactor a la velocidad
       gun.vy = Math.sin(angle) * GUN_SPEED * scaleFactor;
-      
+
       gun.width = gunWidth;
       gun.height = gunHeight;
       gun.img = gunImage;
@@ -1033,7 +1033,7 @@
       const martianAssignedWidth = currentInvaderImgWidth;
       const martianAssignedHeight = currentInvaderImgHeight;
 
-      martians.push({ x, y, vx, vy, img: currentInvaderImg, type: type, health: health, mWidth: martianAssignedWidth, mHeight: martianAssignedHeight, hasLanded: false });
+      martians.push({ x, y, vx, vy, img: currentInvaderImg, type: type, health: health, mWidth: martianAssignedWidth, mHeight: martianAssignedHeight, hasLanded: false, nextDirectionChange: performance.now() + Math.random() * 1000 + 500 });
     }
 
     function drawMartian(martian) {
@@ -1141,7 +1141,23 @@
       if (gameIsOver) return;
       martians.forEach((martian, index) => {
         if (!martian.hasLanded) {
-          martian.x += martian.vx; martian.y += martian.vy;
+          const now = performance.now();
+          if (now > martian.nextDirectionChange) {
+            const directionToPlayer = position.x - martian.x;
+            // Ajusta la velocidad horizontal para moverse hacia el jugador
+            const baseSpeed = martianBaseSpeedX * (0.7 + Math.random() * 0.6); // Velocidad con algo de azar
+            martian.vx = Math.sign(directionToPlayer) * baseSpeed;
+
+            // Si está muy cerca del jugador horizontalmente, puede moverse recto hacia abajo
+            if (Math.abs(directionToPlayer) < invaderImgWidth) {
+              if (Math.random() < 0.3) { // 30% de probabilidad de ir recto
+                martian.vx = 0;
+              }
+            }
+
+            martian.nextDirectionChange = now + Math.random() * 1000 + 500; // Próximo cambio en 0.5-1.5 segundos
+          }
+          martian.x += martian.vx; martian.y += martianBaseSpeedY * scaleFactor;
           if (martian.x - martian.mWidth / 2 < 0 || martian.x + martian.mWidth / 2 > width) { martian.vx *= -1; }
           if (planeta.loaded && planeta.reachedTarget) {
             const planetRadius = planeta.width / 2; const planetCenterX_onCanvas = planeta.x + planetRadius; const planetCenterY_onCanvas = planeta.y + planetRadius;
