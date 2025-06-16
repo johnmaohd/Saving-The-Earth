@@ -179,6 +179,7 @@
     }
 
     #startScreen img {
+      display: block; /* Ensure block-level behavior */
       max-width: 80%;
       height: auto;
       margin-bottom: 2em;
@@ -265,7 +266,12 @@
         margin-top: 4%;
       }
 
+      #startScreen {
+        width: 90vw; /* Set width for tablets */
+        padding: 1em; /* Reduce padding for tablets */
+      }
       #startScreen img {
+        max-width: 100%; /* Fill container width */
         margin-bottom: 1.5em;
       }
 
@@ -317,12 +323,13 @@
       }
 
       #startScreen {
-        padding: 1em;
+        width: 95vw; /* Set width for small mobiles */
+        padding: 0.5em; /* Further reduce padding for small mobiles */
       }
 
       #startScreen img {
         margin-bottom: 1em;
-        max-width: 90%;
+        max-width: 100%; /* Fill container width */
       }
 
       #startGameBtn {
@@ -527,8 +534,8 @@
     const BASE_MARTIAN_BASE_SPEED_X = 0.4; // Velocidad horizontal base de los marcianos
     const BASE_MARTIAN_BASE_SPEED_Y = 0.3;
     const BASE_BULLET_RADIUS = 3;
-    const BASE_GUN_WIDTH = 20; // Ancho base del cohete
-    const BASE_GUN_HEIGHT = 50; // Alto base del cohete
+    const BASE_GUN_WIDTH = 40; // Ancho base del cohete
+    const BASE_GUN_HEIGHT = 100; // Alto base del cohete
     const GUN_SPEED = 7; // Velocidad del cohete
     const BASE_GUN_AOE_RADIUS = 50; // Radio base del área de efecto en píxeles
     const BASE_EXPLOSION_MIN_SIZE = 2;
