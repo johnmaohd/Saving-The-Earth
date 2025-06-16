@@ -404,13 +404,23 @@
       margin: 5px;
     }
 
+    .new-touch-accelerate-brake {
+      width: 130px; /* Match width of L/R row (60*2 + 5*4) */
+      height: 60px;
+      font-size: 44px; /* Larger font for + and - */
+      margin: 5px;
+      line-height: 55px; /* Center the + and - vertically */
+    }
+
     .new-touch-shoot {
-      width: 100px;
-      height: 70px;
-      font-size: 18px;
+      width: 120px;
+      height: 80px;
+      font-size: 20px;
       margin: 5px;
       padding: 10px;
     }
+
+
 
     /* Adjustments for smaller screens */
     @media (max-width: 768px) {
@@ -482,12 +492,12 @@
 
   <div id="newTouchControls">
     <div id="touchControlsLeftCluster">
-      <button id="newTouchUp" class="new-touch-btn new-touch-arrow">▲</button>
+      <button id="newTouchUp" class="new-touch-btn new-touch-accelerate-brake">+</button>
       <div class="touch-lr-row">
         <button id="newTouchLeft" class="new-touch-btn new-touch-arrow">◀</button>
         <button id="newTouchRight" class="new-touch-btn new-touch-arrow">▶</button>
       </div>
-      <button id="newTouchDown" class="new-touch-btn new-touch-arrow">▼</button>
+      <button id="newTouchDown" class="new-touch-btn new-touch-accelerate-brake">-</button>
     </div>
     <div id="touchControlsRightCluster">
       <button id="newTouchShoot" class="new-touch-btn new-touch-shoot">DISPARAR</button>
@@ -687,6 +697,7 @@
 
     function updateScaledValues() {
       scaleFactor = width / BASE_SCREEN_WIDTH;
+      const speedScaleFactor = Math.sqrt(scaleFactor);
 
       // Initial scaling for player and invaders
       playerImgWidth = BASE_PLAYER_IMG_WIDTH * scaleFactor;
@@ -733,13 +744,13 @@
       }
 
       // Other scaled values
-      maxSpeed = BASE_MAX_SPEED * scaleFactor;
+      maxSpeed = BASE_MAX_SPEED * speedScaleFactor;
       actualMinSpeed = maxSpeed * 0.10;
       if (speed === 0 && !gameHasStarted) { speed = actualMinSpeed; }
-      accelerationFactor = BASE_ACCELERATION_FACTOR * scaleFactor;
-      bulletSpeed = BASE_BULLET_SPEED * scaleFactor;
-      martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X * scaleFactor;
-      martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y * scaleFactor;
+      accelerationFactor = BASE_ACCELERATION_FACTOR * speedScaleFactor;
+      bulletSpeed = BASE_BULLET_SPEED * speedScaleFactor;
+      martianBaseSpeedX = BASE_MARTIAN_BASE_SPEED_X * speedScaleFactor;
+      martianBaseSpeedY = BASE_MARTIAN_BASE_SPEED_Y * speedScaleFactor;
       if (width <= 768) {
         bulletRadius = BASE_BULLET_RADIUS * scaleFactor * 3.2; // Más grande en móvil
       } else {
@@ -1164,7 +1175,7 @@
 
             martian.nextDirectionChange = now + Math.random() * 1000 + 500; // Próximo cambio en 0.5-1.5 segundos
           }
-          martian.x += martian.vx; martian.y += martianBaseSpeedY * scaleFactor;
+          martian.x += martian.vx; martian.y += martianBaseSpeedY;
           if (martian.x - martian.mWidth / 2 < 0 || martian.x + martian.mWidth / 2 > width) { martian.vx *= -1; }
           if (planeta.loaded && planeta.reachedTarget) {
             const planetRadius = planeta.width / 2; const planetCenterX_onCanvas = planeta.x + planetRadius; const planetCenterY_onCanvas = planeta.y + planetRadius;
